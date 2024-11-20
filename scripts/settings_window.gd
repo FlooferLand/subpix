@@ -8,10 +8,24 @@ func _ready() -> void:
 			continue
 		if property.name.begins_with("resource_") or property.name == "script":
 			continue
+		widgets.add_child(construct_entry(property, Autoload.settings[property.name], Autoload.settings))
 
-		widgets.add_child(construct_entry(property, Autoload.settings.get(property.name)))
+	# Reset button
+	var reset := Button.new()
+	reset.text = "Reset"
+	reset.pressed.connect(func():
+		var new := Settings.new()
+		for property in Autoload.settings.get_property_list():
+			if not property.usage & PROPERTY_USAGE_EDITOR:
+				continue
+			Autoload.settings[property.name] = new[property.name]
+		Autoload.settings.emit_signal("changed")
+		Autoload.save_settings()
+		queue_free()
+	)
+	widgets.add_child(reset)
 
-func construct_entry(property: Variant, value: Variant, layer: int = 0) -> Node:
+func construct_entry(property: Variant, value: Variant, set_obj: Variant, layer: int = 0) -> Node:
 		# Layer margin
 		var margin := MarginContainer.new()
 		margin.add_theme_constant_override("margin_left", 20 * layer)
@@ -24,7 +38,7 @@ func construct_entry(property: Variant, value: Variant, layer: int = 0) -> Node:
 
 		# Name
 		var name_label := Label.new()
-		name_label.text = property.name
+		name_label.text = property.name.replace("_", " ")
 		container.add_child(name_label)
 
 		# Value
@@ -33,15 +47,27 @@ func construct_entry(property: Variant, value: Variant, layer: int = 0) -> Node:
 			TYPE_BOOL:
 				var checkbox := CheckBox.new()
 				checkbox.button_pressed = value as bool
+				checkbox.toggled.connect(func(new):
+					set_obj[property.name] = new
+					Autoload.settings.emit_signal("changed")
+				)
 				out = checkbox
 			TYPE_STRING:
 				var line_edit := LineEdit.new()
 				line_edit.text = value as String
+				line_edit.text_submitted.connect(func(new):
+					set_obj[property.name] = new
+					Autoload.settings.emit_signal("changed")
+				)
 				out = line_edit
 			TYPE_COLOR:
 				var color_picker := ColorPickerButton.new()
 				color_picker.color = value as Color
 				color_picker.edit_alpha = false
+				color_picker.color_changed.connect(func(new):
+					set_obj[property.name] = new
+					Autoload.settings.emit_signal("changed")
+				)
 				out = color_picker
 			TYPE_DICTIONARY:
 				var dict_prop_container := VBoxContainer.new()
@@ -52,7 +78,7 @@ func construct_entry(property: Variant, value: Variant, layer: int = 0) -> Node:
 					var prop := {}
 					prop["name"] = key
 					prop["type"] = typeof(value_dict[key])
-					dict_prop_container.add_child(construct_entry(prop, value_dict[key], layer + 1))
+					dict_prop_container.add_child(construct_entry(prop, value_dict[key], set_obj[property.name], layer + 1))
 				out = dict_prop_container
 			_:
 				push_error("Settings type '%s' not implemented for '%s'" % [property.type, property.name])
@@ -63,5 +89,5 @@ func construct_entry(property: Variant, value: Variant, layer: int = 0) -> Node:
 		return margin
 
 func _on_close_requested() -> void:
-	queue_free()
 	Autoload.save_settings()
+	queue_free()

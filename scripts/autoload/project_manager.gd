@@ -147,25 +147,49 @@ func export_image(_caller: Node) -> void:
 	add_child(dialog)
 	dialog.popup()
 
-func export_image_large(_caller: Node, canvas: CanvasDriver) -> void:
+func export_image_large(caller: Node, canvas: CanvasDriver) -> void:
 	# Capturing the screenshot
 	var save := func(path):
-		var image: Image
-
-		# Adding the pixels thing
-		var control: Control = canvas.pixel_rows.duplicate()
-		control.position = Vector2.ZERO
+		var control := canvas.pixel_rows_container
+		var control_og_parent := control.get_parent()
 
 		# Creating a viewport
 		var viewport := SubViewport.new()
 		viewport.disable_3d = true
-		viewport.size = control.size
-		viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-		viewport.add_child(control)
-		canvas.add_child(viewport)
-		image = viewport.get_texture().get_image()
+		viewport.transparent_bg = true
+		viewport.size = canvas.pixel_rows.size
+		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		caller.add_child(viewport)
+
+		# Reparenting
+		control.reparent(viewport, false)
+		control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		control.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		control.set_anchors_preset(Control.PRESET_FULL_RECT)
+		control.set_offsets_preset(Control.PRESET_FULL_RECT)
+
+		# Creating the filter
+		if Autoload.settings.fancy_shader:
+			var filter_mat := ShaderMaterial.new()
+			filter_mat.shader = preload("res://shaders/pixelgrid.gdshader")
+			var filter := ColorRect.new()
+			filter.material = filter_mat
+			filter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			filter.size_flags_vertical = Control.SIZE_EXPAND_FILL
+			filter.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			viewport.add_child(filter)
+
+		# Rendering
+		await RenderingServer.frame_post_draw
+		var image: Image = Image.create_empty(viewport.size.x, viewport.size.y, false, Image.FORMAT_RGB8)
+		image.fill(Color.BLACK)
+		image.copy_from(viewport.get_texture().get_image())
 		viewport.queue_free()
 
+		# Reseting parent
+		control.reparent(control_og_parent, false)
+
+		#image.resize(size.x * 4.0, size.y * 4.0, Image.INTERPOLATE_NEAREST)
 		var err := image.save_png(path)
 		if err != OK:
 			OS.alert("Exporting failed due to error '%s'" % err, "Error")

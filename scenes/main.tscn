@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://bsdklnh1jx4iv"]
+[gd_scene load_steps=14 format=3 uid="uid://bsdklnh1jx4iv"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4f1hs"]
 [ext_resource type="Script" path="res://scripts/canvas_driver.gd" id="1_t4d27"]
 [ext_resource type="PackedScene" uid="uid://b23lrec7hffl7" path="res://scenes/settings.tscn" id="2_2lt2v"]
 [ext_resource type="PackedScene" uid="uid://dpsncfyuh0lxb" path="res://grid/pixel/pixel.tscn" id="2_ssvtw"]
+[ext_resource type="Shader" path="res://shaders/pixelgrid.gdshader" id="5_8wt3c"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m8hk0"]
 bg_color = Color(0, 0, 0.117647, 1)
@@ -35,6 +36,9 @@ unicode = 101
 
 [sub_resource type="Shortcut" id="Shortcut_f04tq"]
 events = [SubResource("InputEventKey_5lrlh")]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_42v2x"]
+shader = ExtResource("5_8wt3c")
 
 [node name="Main" type="Control" node_paths=PackedStringArray("canvas", "canvas_viewport", "tool_tree", "brush_strength", "load_button", "save_button", "settings_button", "export_button", "export_large_button")]
 layout_mode = 3
@@ -215,7 +219,7 @@ stretch = true
 [node name="CanvasViewport" type="SubViewport" parent="Panels/Canvas"]
 disable_3d = true
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(1166, 768)
 render_target_update_mode = 4
 
 [node name="Backdrop" type="ColorRect" parent="Panels/Canvas/CanvasViewport"]
@@ -227,12 +231,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="PixelRows" type="VBoxContainer" parent="Panels/Canvas/CanvasViewport"]
-offset_right = 40.0
-offset_bottom = 40.0
-theme_override_constants/separation = 0
-
-[node name="CanvasDriver" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("main", "pixel_rows", "brush_strength")]
+[node name="CanvasDriver" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("main", "pixel_rows_container", "pixel_rows_filter", "pixel_rows", "brush_strength")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -241,6 +240,31 @@ mouse_filter = 2
 mouse_force_pass_scroll_events = false
 script = ExtResource("1_t4d27")
 main = NodePath("../../../..")
-pixel_rows = NodePath("../PixelRows")
+pixel_rows_container = NodePath("../Parent/MovingContainer")
+pixel_rows_filter = NodePath("../Filter")
+pixel_rows = NodePath("../Parent/MovingContainer/PixelRows")
 packed_pixel = ExtResource("2_ssvtw")
 brush_strength = NodePath("../../../Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength/HSlider")
+
+[node name="Parent" type="Control" parent="Panels/Canvas/CanvasViewport"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MovingContainer" type="Control" parent="Panels/Canvas/CanvasViewport/Parent"]
+layout_mode = 1
+anchors_preset = 0
+
+[node name="PixelRows" type="VBoxContainer" parent="Panels/Canvas/CanvasViewport/Parent/MovingContainer"]
+layout_mode = 1
+theme_override_constants/separation = 0
+
+[node name="Filter" type="ColorRect" parent="Panels/Canvas/CanvasViewport"]
+material = SubResource("ShaderMaterial_42v2x")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

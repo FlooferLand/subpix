@@ -1,6 +1,7 @@
 class_name SubPixel
 extends ColorRect
 
+@export var id := ""
 @export var pixel: Pixel
 
 var _on := 0.0
@@ -9,8 +10,17 @@ var color_on: Color
 signal updated(pixel: Pixel, subpixel: SubPixel)
 var hovering := false
 
+func _enter_tree() -> void:
+	color = pixel.color_off
+	# Getting the colour
+	var update_colours := func():
+		var col: Color = Autoload.settings.subpixel_colours[id]
+		color_on = col if col != null else color
+	Autoload.settings.changed.connect(update_colours)
+	update_colours.call()
+
 func _ready() -> void:
-	color_on = color
+	# Connecting signals
 	mouse_entered.connect(
 		func():
 			pixel.canvas.subpixel_info.hovering = self

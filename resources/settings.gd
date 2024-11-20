@@ -3,7 +3,8 @@ extends Resource
 
 @export_group("Theme")
 @export var subpixel_colours := {
-	"dot1": Color(150, 0, 0),
-	"dot2": Color(0, 150, 0),
-	"dot3": Color(0, 40, 230)
+	"dot1": Color(1.0, 0, 0),
+	"dot2": Color(0, 1.0, 0),
+	"dot3": Color.BLUE
 }
+@export var fancy_shader := false

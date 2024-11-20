@@ -11,7 +11,7 @@ exclusive = true
 min_size = Vector2i(200, 200)
 keep_title_visible = true
 script = ExtResource("1_nbdtx")
-widgets = NodePath("Control/MarginContainer/Widgets")
+widgets = NodePath("Control/MarginContainer/ScrollContainer/Widgets")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -41,7 +41,10 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Widgets" type="VBoxContainer" parent="Control/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer"]
+layout_mode = 2
+
+[node name="Widgets" type="VBoxContainer" parent="Control/MarginContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3

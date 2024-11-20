@@ -2,6 +2,8 @@ class_name CanvasDriver
 extends Control
 
 @export var main: Main
+@export var pixel_rows_container: Control
+@export var pixel_rows_filter: ColorRect
 @export var pixel_rows: VBoxContainer
 @export var packed_pixel: PackedScene
 @export var brush_strength: Slider
@@ -28,8 +30,13 @@ enum Tool {
 func _ready():
 	var setup := func():
 		load_image_data(ProjectManager.current_project.image)
-	setup.call()
 	ProjectManager.project_changed.connect(setup)
+	setup.call()
+
+	var update_from_settings := func():
+		pixel_rows_filter.visible = Autoload.settings.fancy_shader
+	Autoload.settings.changed.connect(update_from_settings)
+	update_from_settings.call()
 
 func _input(event: InputEvent):
 	if event is InputEventMouseButton:
@@ -39,9 +46,12 @@ func _input(event: InputEvent):
 			MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN when event.pressed:
 				var modifier := (1.0 if event.button_index == MOUSE_BUTTON_WHEEL_UP else -1.0)
 				zoom = clamp(zoom + (0.05 * modifier), 0.5, 2.0)
-				pixel_rows.pivot_offset = get_local_mouse_position()
-				pixel_rows.scale = Vector2.ONE * zoom
+				pixel_rows_container.pivot_offset = get_local_mouse_position()
+				pixel_rows_container.scale = Vector2.ONE * zoom
 			MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT:
+				if subpixel_info["hovering"] == null:
+					push_warning("Hovering is null")
+					return
 				var value := (brush_strength.value if event.button_index == MOUSE_BUTTON_LEFT else 0.0)
 				if event.pressed:
 					dragging = event.button_index
@@ -74,7 +84,7 @@ func _input(event: InputEvent):
 		if traveling:
 			var mouse: Vector2 = event.relative
 			move -= mouse
-			pixel_rows.position = -move
+			pixel_rows_container.position = -move
 		elif dragging and subpixel_info["hovering"] != null:
 			match tool:
 				Tool.Draw:
@@ -125,5 +135,4 @@ func load_image_data(image: Image) -> void:
 			subpixel_x += 1
 			add_subpixel.call(pixel.sub_blue,  Vector2i(subpixel_x, y))
 			subpixel_x += 1
-
 		pixel_rows.add_child(row)

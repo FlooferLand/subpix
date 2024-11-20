@@ -44,6 +44,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0.588235, 0, 0, 1)
 script = ExtResource("2_j8usu")
+id = "dot1"
 pixel = NodePath("../../..")
 
 [node name="Green" type="ColorRect" parent="MarginContainer/Subs" node_paths=PackedStringArray("pixel")]
@@ -51,11 +52,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0, 0.588235, 0, 1)
 script = ExtResource("2_j8usu")
+id = "dot2"
 pixel = NodePath("../../..")
 
 [node name="Blue" type="ColorRect" parent="MarginContainer/Subs" node_paths=PackedStringArray("pixel")]
 layout_mode = 2
 size_flags_horizontal = 3
-color = Color(0, 0.156863, 0.901961, 1)
+color = Color(0.0901961, 0.321569, 1, 1)
 script = ExtResource("2_j8usu")
+id = "dot3"
 pixel = NodePath("../../..")
