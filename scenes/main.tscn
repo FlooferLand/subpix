@@ -249,8 +249,8 @@ brush_strength = NodePath("../../../Left panel/MarginContainer/VBoxContainer/Bru
 [node name="Parent" type="Control" parent="Panels/Canvas/CanvasViewport"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="MovingContainer" type="Control" parent="Panels/Canvas/CanvasViewport/Parent"]
 layout_mode = 1
