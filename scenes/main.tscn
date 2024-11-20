@@ -1,0 +1,246 @@
+[gd_scene load_steps=12 format=3 uid="uid://bsdklnh1jx4iv"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_4f1hs"]
+[ext_resource type="Script" path="res://scripts/canvas_driver.gd" id="1_t4d27"]
+[ext_resource type="PackedScene" uid="uid://b23lrec7hffl7" path="res://scenes/settings.tscn" id="2_2lt2v"]
+[ext_resource type="PackedScene" uid="uid://dpsncfyuh0lxb" path="res://grid/pixel/pixel.tscn" id="2_ssvtw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m8hk0"]
+bg_color = Color(0, 0, 0.117647, 1)
+border_width_right = 1
+
+[sub_resource type="InputEventKey" id="InputEventKey_lgpif"]
+device = -1
+ctrl_pressed = true
+keycode = 79
+unicode = 111
+
+[sub_resource type="Shortcut" id="Shortcut_txx0j"]
+events = [SubResource("InputEventKey_lgpif")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_cmw3w"]
+device = -1
+ctrl_pressed = true
+keycode = 83
+unicode = 115
+
+[sub_resource type="Shortcut" id="Shortcut_4vgmt"]
+events = [SubResource("InputEventKey_cmw3w")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_5lrlh"]
+device = -1
+ctrl_pressed = true
+keycode = 69
+unicode = 101
+
+[sub_resource type="Shortcut" id="Shortcut_f04tq"]
+events = [SubResource("InputEventKey_5lrlh")]
+
+[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "canvas_viewport", "tool_tree", "brush_strength", "load_button", "save_button", "settings_button", "export_button", "export_large_button")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4f1hs")
+canvas = NodePath("Panels/Canvas/CanvasViewport/CanvasDriver")
+canvas_viewport = NodePath("Panels/Canvas/CanvasViewport")
+tool_tree = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Tools/Tools")
+brush_strength = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength/HSlider")
+load_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project/Load")
+save_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project/Save")
+settings_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/Settings")
+export_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export/Export PNG")
+export_large_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export/Export PNG large")
+settings_scene = ExtResource("2_2lt2v")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.155764, 0.155764, 0.155764, 1)
+
+[node name="Panels" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 3
+
+[node name="Left panel" type="Control" parent="Panels"]
+custom_minimum_size = Vector2(192, 0)
+layout_mode = 2
+
+[node name="Backdrop" type="Panel" parent="Panels/Left panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+theme_override_styles/panel = SubResource("StyleBoxFlat_m8hk0")
+
+[node name="MarginContainer" type="MarginContainer" parent="Panels/Left panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panels/Left panel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Tools" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Tools"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+text = "Tools"
+autowrap_mode = 2
+
+[node name="Tools" type="Tree" parent="Panels/Left panel/MarginContainer/VBoxContainer/Tools"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+focus_mode = 0
+hide_root = true
+scroll_horizontal_enabled = false
+
+[node name="Brush" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Brush"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+text = "Brush"
+autowrap_mode = 2
+
+[node name="Brush" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Brush"]
+layout_mode = 2
+
+[node name="Strength" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Brush/Brush"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength"]
+layout_mode = 2
+text = "Strength"
+horizontal_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="Panels/Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength"]
+layout_mode = 2
+max_value = 1.0
+step = 0.1
+value = 1.0
+
+[node name="Nerd stuff" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 35
+alignment = 2
+
+[node name="Project" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project"]
+layout_mode = 2
+text = "Project"
+
+[node name="Load" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project"]
+layout_mode = 2
+focus_mode = 0
+shortcut = SubResource("Shortcut_txx0j")
+text = "Load image"
+
+[node name="Save" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project"]
+layout_mode = 2
+focus_mode = 0
+shortcut = SubResource("Shortcut_4vgmt")
+text = "Save image"
+
+[node name="Export" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export"]
+layout_mode = 2
+text = "Export (PNG)"
+
+[node name="Export PNG" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export"]
+layout_mode = 2
+focus_mode = 0
+shortcut = SubResource("Shortcut_f04tq")
+text = "Export"
+
+[node name="Export PNG large" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export"]
+layout_mode = 2
+focus_mode = 0
+shortcut = SubResource("Shortcut_f04tq")
+text = "Export large"
+
+[node name="Editor" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff"]
+layout_mode = 2
+alignment = 2
+
+[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
+layout_mode = 2
+text = "Editor"
+
+[node name="Settings" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
+layout_mode = 2
+focus_mode = 0
+text = "Open settings"
+
+[node name="Canvas" type="SubViewportContainer" parent="Panels"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+stretch = true
+
+[node name="CanvasViewport" type="SubViewport" parent="Panels/Canvas"]
+disable_3d = true
+handle_input_locally = false
+size = Vector2i(2, 2)
+render_target_update_mode = 4
+
+[node name="Backdrop" type="ColorRect" parent="Panels/Canvas/CanvasViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="PixelRows" type="VBoxContainer" parent="Panels/Canvas/CanvasViewport"]
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/separation = 0
+
+[node name="CanvasDriver" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("main", "pixel_rows", "brush_strength")]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
+script = ExtResource("1_t4d27")
+main = NodePath("../../../..")
+pixel_rows = NodePath("../PixelRows")
+packed_pixel = ExtResource("2_ssvtw")
+brush_strength = NodePath("../../../Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength/HSlider")

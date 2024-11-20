@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Settings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://resources/settings.gd" id="1_yc6da"]
+
+[resource]
+script = ExtResource("1_yc6da")
+subpixel_colours = {
+"dot1": Color(150, 0, 0, 1),
+"dot2": Color(0, 150, 0, 1),
+"dot3": Color(0, 40, 230, 1)
+}
