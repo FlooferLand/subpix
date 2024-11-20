@@ -7,4 +7,4 @@ extends Resource
 	"dot2": Color(0, 1.0, 0),
 	"dot3": Color.BLUE
 }
-@export var fancy_shader := false
+@export var fancy_shader := true

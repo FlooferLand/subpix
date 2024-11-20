@@ -1,5 +1,6 @@
 # Game-specific
 builds/
+settings.tscn
 
 # Godot 4+ specific ignores
 .godot/

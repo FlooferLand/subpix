@@ -21,9 +21,6 @@ shader_type canvas_item;
 
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture;
 
-// Emulated input resolution.
-const vec2 res = vec2(256, 256);
-
 // Mask type
 //  0 = Very compressed TV style shadow mask
 //  1 = Stretched VGA style shadow mask (same as prior shaders)
@@ -34,7 +31,7 @@ const int mask_type = 0;
 //  0 = Normalized exposure
 //  1 = Aditive bloom
 //  2 = No Bloom
-const int bloom_type = 0;
+const int bloom_type = 1;
 
 // Hardness of scanline.
 //  -8.0 = soft
@@ -44,7 +41,7 @@ const float hardScan = -8.0;
 // Hardness of pixels in scanline.
 // -2.0 = soft
 // -4.0 = hard
-const float hardPix = -2.0;
+const float hardPix = -16.0;
 
 // Hardness of short vertical bloom.
 //  -1.0 = wide to the point of clipping (bad)
@@ -87,9 +84,7 @@ vec3 ToSrgb(vec3 c){ return vec3(ToSrgb1(c.r), ToSrgb1(c.g), ToSrgb1(c.b)); }
 
 // Nearest emulated sample given floating point position and texel offset.
 // Also zero's off screen.
-vec3 Fetch(vec2 pos, vec2 off, sampler2D iChannel0){
-	pos = floor(pos * res + off) / res;
-	
+vec3 Fetch(vec2 pos, vec2 off, sampler2D iChannel0){	
 	if(max(abs(pos.x - 0.5), abs(pos.y - 0.5)) > 0.5){
 		return vec3(0.0, 0.0, 0.0);
 	}
@@ -98,8 +93,7 @@ vec3 Fetch(vec2 pos, vec2 off, sampler2D iChannel0){
 }
 
 // Distance in emulated pixels to nearest texel.
-vec2 Dist(vec2 pos){ 
-	pos = pos * res; 
+vec2 Dist(vec2 pos){
 	return - ((pos - floor(pos)) - vec2(0.5));
 }
     
