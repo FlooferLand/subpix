@@ -7,6 +7,7 @@ extends Control
 @export var pixel_rows: VBoxContainer
 @export var packed_pixel: PackedScene
 @export var brush_strength: Slider
+@export var draw_on_top: DrawOnTop
 var subpixels: Dictionary = {}
 var pixels: Dictionary = {}
 var traveling := false
@@ -28,13 +29,17 @@ enum Tool {
 }
 
 func _ready():
+	# Project
 	var setup := func():
 		load_image_data(ProjectManager.current_project.image)
+		main.preview_image.texture = ImageTexture.create_from_image(ProjectManager.current_project.image)
 	ProjectManager.project_changed.connect(setup)
 	setup.call()
 
+	# Settings
 	var update_from_settings := func():
 		pixel_rows_filter.visible = Autoload.settings.fancy_shader
+		main.preview_image_window.visible = Autoload.settings.show_preview
 	Autoload.settings.changed.connect(update_from_settings)
 	update_from_settings.call()
 
@@ -77,7 +82,7 @@ func _input(event: InputEvent):
 									subpixels[Vector2i(x, y)].set_subpixel(value)
 						subpixel_info["start"] = null
 						subpixel_info["end"] = null
-						queue_redraw()
+						draw_on_top.queue_redraw()
 					dragging = 0
 					dragged_tiles.clear()
 	elif event is InputEventMouseMotion:
@@ -91,19 +96,18 @@ func _input(event: InputEvent):
 					# TODO: Make a map of all the cursor locations and paint between them to avoid gaps when moving too fast
 					subpixel_info["hovering"].set_subpixel(brush_strength.value if dragging == MOUSE_BUTTON_LEFT else 0.0)
 				Tool.Fill:
-					queue_redraw()
-
-func _draw() -> void:
-	if tool == Tool.Fill and subpixel_info["start"] != null:
-		var start = subpixel_info["start"].global_position.min(subpixel_info["hovering"].global_position)
-		var end = (subpixel_info["start"].global_position + subpixel_info["start"].size).max(subpixel_info["hovering"].global_position + subpixel_info["hovering"].size)
-
-		var rect: Rect2 = Rect2(start, end - start)
-		draw_rect(rect, Color.WHITE, false, 3.0, false)
+					draw_on_top.queue_redraw()
 
 func _on_pixel_updated(pixel: Pixel, _subpixel: SubPixel):
 	var image := ProjectManager.current_project.image
 	image.set_pixelv(pixel.pos, pixel.construct_colour())
+
+	# Updating the preview
+	if main.preview_image.texture == null or Vector2i(main.preview_image.texture.get_size()) != image.get_size():
+		main.preview_image.texture = ImageTexture.create_from_image(image)
+	main.preview_image.texture.update(image)
+
+	# Marking the project unsaved
 	ProjectManager.current_project.mark_dirty()
 
 func load_image_data(image: Image) -> void:

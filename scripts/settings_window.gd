@@ -47,6 +47,7 @@ func construct_entry(property: Variant, value: Variant, set_obj: Variant, layer:
 			TYPE_BOOL:
 				var checkbox := CheckBox.new()
 				checkbox.button_pressed = value as bool
+				checkbox.focus_mode = Control.FOCUS_NONE
 				checkbox.toggled.connect(func(new):
 					set_obj[property.name] = new
 					Autoload.settings.emit_signal("changed")

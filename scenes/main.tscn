@@ -1,10 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://bsdklnh1jx4iv"]
+[gd_scene load_steps=15 format=3 uid="uid://bsdklnh1jx4iv"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_4f1hs"]
 [ext_resource type="Script" path="res://scripts/canvas_driver.gd" id="1_t4d27"]
 [ext_resource type="PackedScene" uid="uid://b23lrec7hffl7" path="res://scenes/settings.tscn" id="2_2lt2v"]
 [ext_resource type="PackedScene" uid="uid://dpsncfyuh0lxb" path="res://grid/pixel/pixel.tscn" id="2_ssvtw"]
 [ext_resource type="Shader" path="res://shaders/pixelgrid.gdshader" id="5_8wt3c"]
+[ext_resource type="Script" path="res://scripts/draw_on_top.gd" id="6_w3tut"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m8hk0"]
 bg_color = Color(0, 0, 0.117647, 1)
@@ -40,7 +41,7 @@ events = [SubResource("InputEventKey_5lrlh")]
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_42v2x"]
 shader = ExtResource("5_8wt3c")
 
-[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "canvas_viewport", "tool_tree", "brush_strength", "load_button", "save_button", "settings_button", "export_button", "export_large_button")]
+[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "canvas_viewport", "tool_tree", "brush_strength", "load_button", "save_button", "settings_button", "export_button", "export_large_button", "preview_toggle", "preview_image_window", "preview_image")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -57,6 +58,9 @@ save_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stu
 settings_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/Settings")
 export_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export/Export PNG")
 export_large_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export/Export PNG large")
+preview_toggle = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/Preview")
+preview_image_window = NodePath("Panels/Preview")
+preview_image = NodePath("Panels/Preview/TextureRect")
 settings_scene = ExtResource("2_2lt2v")
 
 [node name="Backdrop" type="ColorRect" parent="."]
@@ -210,6 +214,11 @@ layout_mode = 2
 focus_mode = 0
 text = "Open settings"
 
+[node name="Preview" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
+layout_mode = 2
+focus_mode = 0
+text = "Toggle preview"
+
 [node name="Canvas" type="SubViewportContainer" parent="Panels"]
 clip_contents = true
 layout_mode = 2
@@ -231,7 +240,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="CanvasDriver" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("main", "pixel_rows_container", "pixel_rows_filter", "pixel_rows", "brush_strength")]
+[node name="CanvasDriver" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("main", "pixel_rows_container", "pixel_rows_filter", "pixel_rows", "brush_strength", "draw_on_top")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -245,6 +254,7 @@ pixel_rows_filter = NodePath("../Filter")
 pixel_rows = NodePath("../Parent/MovingContainer/PixelRows")
 packed_pixel = ExtResource("2_ssvtw")
 brush_strength = NodePath("../../../Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength/HSlider")
+draw_on_top = NodePath("../DrawOnTop")
 
 [node name="Parent" type="Control" parent="Panels/Canvas/CanvasViewport"]
 layout_mode = 3
@@ -260,6 +270,15 @@ anchors_preset = 0
 layout_mode = 1
 theme_override_constants/separation = 0
 
+[node name="DrawOnTop" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("canvas")]
+editor_description = "Draws stuff on top of the entire app"
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_w3tut")
+canvas = NodePath("../CanvasDriver")
+
 [node name="Filter" type="ColorRect" parent="Panels/Canvas/CanvasViewport"]
 material = SubResource("ShaderMaterial_42v2x")
 anchors_preset = 15
@@ -268,3 +287,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="Preview" type="Window" parent="Panels"]
+title = "Preview"
+position = Vector2i(1026, 62)
+size = Vector2i(150, 150)
+transient = true
+unfocusable = true
+
+[node name="TextureRect" type="TextureRect" parent="Panels/Preview"]
+texture_filter = 1
+texture_repeat = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 2

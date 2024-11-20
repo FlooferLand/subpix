@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://bld387m82sawo"]
+[gd_scene load_steps=5 format=3 uid="uid://bld387m82sawo"]
 
 [ext_resource type="Script" path="res://scripts/entry.gd" id="1_v23wx"]
+[ext_resource type="Shader" path="res://shaders/scrolling_backdrop.gdshader" id="2_7qrue"]
+[ext_resource type="Texture2D" uid="uid://da7trkdsdhchh" path="res://textures/pixel.png" id="3_riyh0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_em41k"]
+shader = ExtResource("2_7qrue")
+shader_parameter/tile_size = 15.0
+shader_parameter/brightness = 0.4
+shader_parameter/tile = ExtResource("3_riyh0")
 
 [node name="Entry" type="Control" node_paths=PackedStringArray("create_button", "load_button", "version")]
 layout_mode = 3
@@ -15,13 +23,13 @@ load_button = NodePath("Buttons/Load")
 version = NodePath("Version")
 
 [node name="Backdrop" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_em41k")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
 
 [node name="Label" type="RichTextLabel" parent="."]
 layout_mode = 1

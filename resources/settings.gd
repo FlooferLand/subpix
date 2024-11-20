@@ -8,3 +8,4 @@ extends Resource
 	"dot3": Color.BLUE
 }
 @export var fancy_shader := true
+@export var show_preview := true

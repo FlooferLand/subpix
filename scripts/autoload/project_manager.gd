@@ -40,6 +40,17 @@ func new_project(caller: Node):
 	container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
+	# Margin container
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_left", 10)
+	margin.add_theme_constant_override("margin_bottom", 10)
+	margin.add_theme_constant_override("margin_right", 10)
+	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	margin.add_child(container)
+
 	# Widgets
 	var width_edit := LineEdit.new()
 	width_edit.placeholder_text = "Width"
@@ -78,7 +89,7 @@ func new_project(caller: Node):
 	# Window and stuff
 	window.close_requested.connect(window.queue_free)
 	window.add_child(backdrop)
-	window.add_child(container)
+	window.add_child(margin)
 	add_child(window)
 
 func load_project(caller: Node):
@@ -208,6 +219,7 @@ func export_image_large(caller: Node, canvas: CanvasDriver) -> void:
 func _configure_filedialog(dialog: FileDialog) -> void:
 	dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
 	dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
+	dialog.use_native_dialog = true
 	dialog.min_size = get_window().size * 0.8
 	dialog.size = dialog.min_size
 	dialog.access = FileDialog.ACCESS_FILESYSTEM

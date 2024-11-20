@@ -11,17 +11,27 @@ extends Control
 @export var settings_button: Button
 @export var export_button: Button
 @export var export_large_button: Button
+@export var preview_toggle: Button
+@export var preview_image_window: Window
+@export var preview_image: TextureRect
 
 @export_group("Resources")
 @export var settings_scene: PackedScene
 
 func _ready() -> void:
-	settings_button.pressed.connect(open_settings)
-
 	load_button.pressed.connect(func(): ProjectManager.load_project(self))
 	save_button.pressed.connect(func(): ProjectManager.save_project(self))
 	export_button.pressed.connect(func(): ProjectManager.export_image(self))
 	export_large_button.pressed.connect(func(): ProjectManager.export_image_large(self, canvas))
+	settings_button.pressed.connect(open_settings)
+
+	# Preview window
+	var toggle_preview_window := func():
+		preview_image_window.visible = not preview_image_window.visible
+		Autoload.settings.show_preview = preview_image_window.visible
+	preview_image_window.position = Vector2(get_viewport().size) - Vector2(preview_image_window.size) - Vector2(32, 32)
+	preview_image_window.close_requested.connect(toggle_preview_window)
+	preview_toggle.pressed.connect(toggle_preview_window)
 
 	# Tool tree
 	var root := tool_tree.create_item()
@@ -38,7 +48,7 @@ func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if ProjectManager.current_project.dirty:
 			var dialog := ConfirmationDialog.new()
-			dialog.dialog_text = "Are you sure you want to quit?\nYou haven't saved!"
+			dialog.dialog_text = "Are you sure you want to quit?\nYou haven't saved yet!"
 			dialog.confirmed.connect(func(): get_tree().quit())
 			dialog.canceled.connect(func(): dialog.queue_free())
 			add_child(dialog)

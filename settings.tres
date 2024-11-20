@@ -9,4 +9,5 @@ subpixel_colours = {
 "dot2": Color(0, 1, 0, 1),
 "dot3": Color(0, 0, 1, 1)
 }
-fancy_shader = true
+fancy_shader = false
+show_preview = true
