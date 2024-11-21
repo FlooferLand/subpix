@@ -32,6 +32,10 @@ window/size/viewport_height=768
 window/size/window_width_override=1366
 window/size/window_height_override=768
 
+[dotnet]
+
+project/assembly_name="Subpix"
+
 [gui]
 
 theme/custom="res://ui.theme"

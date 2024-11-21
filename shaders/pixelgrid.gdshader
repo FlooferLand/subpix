@@ -64,7 +64,7 @@ const float bloomAmount = 16.0;
 // Display warp.
 // 0.0 = none
 // 1.0/8.0 = extreme
-const vec2 warp = vec2(64.0, 24.0);
+const vec2 warp = vec2(96.0, 32.0);
 
 // Amount of shadow mask.
 const float maskDark  = 0.5;

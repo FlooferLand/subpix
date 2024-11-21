@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bld387m82sawo"]
+[gd_scene load_steps=6 format=3 uid="uid://bld387m82sawo"]
 
 [ext_resource type="Script" path="res://scripts/entry.gd" id="1_v23wx"]
 [ext_resource type="Shader" path="res://shaders/scrolling_backdrop.gdshader" id="2_7qrue"]
@@ -10,7 +10,10 @@ shader_parameter/tile_size = 15.0
 shader_parameter/brightness = 0.4
 shader_parameter/tile = ExtResource("3_riyh0")
 
-[node name="Entry" type="Control" node_paths=PackedStringArray("create_button", "load_button", "version")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ufxal"]
+bg_color = Color(0, 0, 0, 0.784314)
+
+[node name="Entry" type="Control" node_paths=PackedStringArray("create_button", "load_button", "info")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,9 +21,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_v23wx")
-create_button = NodePath("Buttons/Create")
-load_button = NodePath("Buttons/Load")
-version = NodePath("Version")
+create_button = NodePath("PanelContainer/MarginContainer/Buttons/Create")
+load_button = NodePath("PanelContainer/MarginContainer/Buttons/Load")
+info = NodePath("MarginContainer/VBoxContainer/Info")
 
 [node name="Backdrop" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_em41k")
@@ -48,36 +51,59 @@ text = "[center][font_size=32][wave][color=cyan]subpix[/color][/wave]
 [font_size=16][wave freq=4 amp=8]Made by FlooferLand[/wave]
 [font_size=16][wave freq=4 amp=8]Inspired by Japphy Riddle's video[/wave]"
 
-[node name="Buttons" type="VBoxContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -145.0
-offset_top = 195.0
-offset_right = 145.0
-offset_bottom = 409.0
+offset_left = -160.0
+offset_top = 214.0
+offset_right = 160.0
+offset_bottom = 314.0
 grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ufxal")
+metadata/_edit_group_ = true
 
-[node name="Create" type="Button" parent="Buttons"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Buttons" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Create" type="Button" parent="PanelContainer/MarginContainer/Buttons"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "New project"
 
-[node name="Load" type="Button" parent="Buttons"]
+[node name="Load" type="Button" parent="PanelContainer/MarginContainer/Buttons"]
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
 text = "Load project"
 
-[node name="Version" type="Label" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 2
+anchors_preset = 12
 anchor_top = 1.0
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = -127.0
-offset_right = 446.0
-offset_bottom = -8.0
+offset_top = -146.0
+grow_horizontal = 2
 grow_vertical = 0
-text = "Version 0.0.0"
-vertical_alignment = 2
+theme_override_constants/margin_left = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="Info" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/line_separation = 5
+bbcode_enabled = true
+text = "Version 0.0.0
+Other stuff here"
+fit_content = true
+scroll_active = false

@@ -10,6 +10,6 @@ void fragment() {
     vec2 uv = mod(UV * vec2((tile_size * 2.0) * aspect_ratio, tile_size), 1.0);
 	uv += TIME * -0.3;
 	uv = mod(uv, 1.0);
-	
+
 	COLOR.rgb = texture(tile, uv).rgb * brightness;
 }

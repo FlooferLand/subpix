@@ -228,7 +228,7 @@ stretch = true
 [node name="CanvasViewport" type="SubViewport" parent="Panels/Canvas"]
 disable_3d = true
 handle_input_locally = false
-size = Vector2i(1166, 768)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="Backdrop" type="ColorRect" parent="Panels/Canvas/CanvasViewport"]
