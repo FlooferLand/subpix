@@ -220,6 +220,7 @@ func _configure_filedialog(dialog: FileDialog) -> void:
 	dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
 	dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
 	dialog.use_native_dialog = true
+	dialog.force_native = true
 	dialog.min_size = get_window().size * 0.8
 	dialog.size = dialog.min_size
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
