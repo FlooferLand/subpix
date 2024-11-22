@@ -15,10 +15,10 @@ class Project:
 signal project_changed(new: Dictionary)
 var current_project: Project = null
 var main_scene := "res://scenes/main.tscn"
-var max_image_size := Vector2(48, 48)
+var max_image_size := Vector2(96, 96)
 var max_image_warning := "The image size is currently limited to %sx%s for performance reasons, sorry!\nThis will change as the program improves and gets more efficient." % [max_image_size.x, max_image_size.y]
 
-func new_project(caller: Node):
+func new_project(caller: Node, debug: bool = false):
 	var window := Window.new()
 	window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
 	window.transient = true
@@ -62,7 +62,7 @@ func new_project(caller: Node):
 
 	var create := Button.new()
 	create.text = "Create"
-	create.pressed.connect(func():
+	var make_project := func():
 		var width := -1
 		var height := -1
 		if width_edit.text.is_valid_int() and height_edit.text.is_valid_int():
@@ -73,7 +73,7 @@ func new_project(caller: Node):
 			return
 
 		# Checking if size is valid
-		if width > max_image_size.x or height > max_image_size.y:
+		if (width > max_image_size.x or height > max_image_size.y) and not debug:
 			OS.alert(max_image_warning, "Max limit reached")
 			return
 
@@ -83,7 +83,7 @@ func new_project(caller: Node):
 		current_project = Project.new(image)
 		caller.get_tree().change_scene_to_file(main_scene)
 		window.queue_free()
-	)
+	create.pressed.connect(make_project)
 	container.add_child(create)
 
 	# Window and stuff
@@ -91,6 +91,12 @@ func new_project(caller: Node):
 	window.add_child(backdrop)
 	window.add_child(margin)
 	add_child(window)
+
+	# For debug mostly
+	if debug:
+		width_edit.text  = str(max_image_size.x)
+		height_edit.text = str(max_image_size.y)
+		make_project.call()
 
 func load_project(caller: Node):
 	var save := func(path):

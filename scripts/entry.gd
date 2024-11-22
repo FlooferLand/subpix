@@ -16,6 +16,11 @@ func _ready() -> void:
 			OS.shell_open(str(meta))
 	)
 
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey:
+		if OS.is_debug_build() and event.pressed and event.keycode == KEY_C:
+			ProjectManager.new_project(self, true)
+
 func add_info_line(line: String):
 	info.append_text(
 		line.replace("[url=", "[color=cyan][url=")

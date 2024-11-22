@@ -14,6 +14,7 @@ extends Control
 @export var preview_toggle: Button
 @export var preview_image_window: Window
 @export var preview_image: TextureRect
+@export var fps: Label
 
 @export_group("Resources")
 @export var settings_scene: PackedScene
@@ -44,6 +45,9 @@ func _ready() -> void:
 	# Not letting the user accidentally quit
 	get_tree().set_auto_accept_quit(false)
 
+func _exit_tree() -> void:
+	get_tree().set_auto_accept_quit(true)
+
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if ProjectManager.current_project.dirty:
@@ -56,8 +60,8 @@ func _notification(what):
 		else:
 			get_tree().quit()
 
-func _exit_tree() -> void:
-	get_tree().set_auto_accept_quit(true)
+func _process(delta: float) -> void:
+	fps.text = "FPS: %s" % Engine.get_frames_per_second()
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("brush_strength_add") or event.is_action_pressed("brush_strength_sub") :

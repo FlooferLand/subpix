@@ -8,6 +8,7 @@ extends Control
 @export var packed_pixel: PackedScene
 @export var brush_strength: Slider
 @export var draw_on_top: DrawOnTop
+@export var canvas_size: Label
 var subpixels: Dictionary = {}
 var pixels: Dictionary = {}
 var traveling := false
@@ -50,7 +51,7 @@ func _input(event: InputEvent):
 				traveling = event.pressed
 			MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN when event.pressed:
 				var modifier := (1.0 if event.button_index == MOUSE_BUTTON_WHEEL_UP else -1.0)
-				zoom = clamp(zoom + (0.05 * modifier), 0.5, 2.0)
+				zoom = clamp(zoom + (0.05 * modifier), 0.3, 2.0)
 				pixel_rows_container.pivot_offset = get_local_mouse_position()
 				pixel_rows_container.scale = Vector2.ONE * zoom
 			MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT:
@@ -106,6 +107,13 @@ func _on_pixel_updated(pixel: Pixel, _subpixel: SubPixel):
 	if main.preview_image.texture == null or Vector2i(main.preview_image.texture.get_size()) != image.get_size():
 		main.preview_image.texture = ImageTexture.create_from_image(image)
 	main.preview_image.texture.update(image)
+
+	# Updating project stats
+	canvas_size.text = "Size: %sx%s\n    (%s MB)" % [
+		image.get_width(),
+		image.get_height(),
+		snapped(image.get_data_size() * 0.000001, 0.001)
+	]
 
 	# Marking the project unsaved
 	ProjectManager.current_project.mark_dirty()

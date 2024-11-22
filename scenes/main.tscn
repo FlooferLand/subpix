@@ -41,7 +41,7 @@ events = [SubResource("InputEventKey_5lrlh")]
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_42v2x"]
 shader = ExtResource("5_8wt3c")
 
-[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "canvas_viewport", "tool_tree", "brush_strength", "load_button", "save_button", "settings_button", "export_button", "export_large_button", "preview_toggle", "preview_image_window", "preview_image")]
+[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "canvas_viewport", "tool_tree", "brush_strength", "load_button", "save_button", "settings_button", "export_button", "export_large_button", "preview_toggle", "preview_image_window", "preview_image", "fps")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -61,6 +61,7 @@ export_large_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/
 preview_toggle = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/Preview")
 preview_image_window = NodePath("Panels/Preview")
 preview_image = NodePath("Panels/Preview/TextureRect")
+fps = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/FPS")
 settings_scene = ExtResource("2_2lt2v")
 
 [node name="Backdrop" type="ColorRect" parent="."]
@@ -117,7 +118,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Tools"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0.466667, 1, 1)
 text = "Tools"
 autowrap_mode = 2
 
@@ -134,7 +135,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Brush"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 1, 1, 1)
+theme_override_colors/font_color = Color(0, 0.466667, 1, 1)
 text = "Brush"
 autowrap_mode = 2
 
@@ -167,6 +168,7 @@ alignment = 2
 
 [node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.466667, 1, 1)
 text = "Project"
 
 [node name="Load" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project"]
@@ -174,12 +176,20 @@ layout_mode = 2
 focus_mode = 0
 shortcut = SubResource("Shortcut_txx0j")
 text = "Load image"
+alignment = 0
 
 [node name="Save" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project"]
 layout_mode = 2
 focus_mode = 0
 shortcut = SubResource("Shortcut_4vgmt")
 text = "Save image"
+alignment = 0
+
+[node name="Canvas size" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+text = "Size"
+autowrap_mode = 3
 
 [node name="Export" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff"]
 layout_mode = 2
@@ -187,6 +197,7 @@ alignment = 2
 
 [node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.466667, 1, 1)
 text = "Export (PNG)"
 
 [node name="Export PNG" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export"]
@@ -194,12 +205,14 @@ layout_mode = 2
 focus_mode = 0
 shortcut = SubResource("Shortcut_f04tq")
 text = "Export"
+alignment = 0
 
 [node name="Export PNG large" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Export"]
 layout_mode = 2
 focus_mode = 0
 shortcut = SubResource("Shortcut_f04tq")
 text = "Export large"
+alignment = 0
 
 [node name="Editor" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff"]
 layout_mode = 2
@@ -207,17 +220,26 @@ alignment = 2
 
 [node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.466667, 1, 1)
 text = "Editor"
 
 [node name="Settings" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
 layout_mode = 2
 focus_mode = 0
 text = "Open settings"
+alignment = 0
 
 [node name="Preview" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
 layout_mode = 2
 focus_mode = 0
 text = "Toggle preview"
+alignment = 0
+
+[node name="FPS" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+text = "FPS: "
+autowrap_mode = 3
 
 [node name="Canvas" type="SubViewportContainer" parent="Panels"]
 clip_contents = true
@@ -228,7 +250,7 @@ stretch = true
 [node name="CanvasViewport" type="SubViewport" parent="Panels/Canvas"]
 disable_3d = true
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(1166, 768)
 render_target_update_mode = 4
 
 [node name="Backdrop" type="ColorRect" parent="Panels/Canvas/CanvasViewport"]
@@ -240,7 +262,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[node name="CanvasDriver" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("main", "pixel_rows_container", "pixel_rows_filter", "pixel_rows", "brush_strength", "draw_on_top")]
+[node name="CanvasDriver" type="Control" parent="Panels/Canvas/CanvasViewport" node_paths=PackedStringArray("main", "pixel_rows_container", "pixel_rows_filter", "pixel_rows", "brush_strength", "draw_on_top", "canvas_size")]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -255,6 +277,7 @@ pixel_rows = NodePath("../Parent/MovingContainer/PixelRows")
 packed_pixel = ExtResource("2_ssvtw")
 brush_strength = NodePath("../../../Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength/HSlider")
 draw_on_top = NodePath("../DrawOnTop")
+canvas_size = NodePath("../../../Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project/Canvas size")
 
 [node name="Parent" type="Control" parent="Panels/Canvas/CanvasViewport"]
 layout_mode = 3
