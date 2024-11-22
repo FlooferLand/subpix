@@ -166,8 +166,9 @@ func export_image(_caller: Node) -> void:
 
 func export_image_large(caller: Node, canvas: CanvasDriver) -> void:
 	# Capturing the screenshot
+	# TODO: Make sure exporting still works with the new canvas
 	var save := func(path):
-		var control := canvas.pixel_rows_container
+		var control := canvas.camera
 		var control_og_parent := control.get_parent()
 
 		# Creating a viewport

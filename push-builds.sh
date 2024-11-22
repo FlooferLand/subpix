@@ -1,7 +1,11 @@
 #!/bin/bash
 
+alias godot="/usr/bin/godot"
 version=$(awk -F "=" '/config\/version/ {print $2}' < "project.godot" | tr -d '"')
 
+start_build() {
+    godot --headless --export-release "$1"
+}
 push_build() {
     channel="$1"
     path="$2"
@@ -10,9 +14,14 @@ push_build() {
 }
 
 # Web build
+start_build "Web"
 rm builds/web/index.png
 push_build web builds/web
 
-# Desktop build
+# Linux build
+start_build "Linux"
 push_build linux builds/linux
+
+# Windows build
+start_build "Windows Desktop"
 push_build windows builds/windows
