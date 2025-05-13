@@ -1,10 +1,10 @@
 [gd_scene load_steps=14 format=3 uid="uid://bsdklnh1jx4iv"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_4f1hs"]
-[ext_resource type="Script" path="res://scripts/canvas_driver.gd" id="1_t4d27"]
+[ext_resource type="Script" uid="uid://dve7khq6oh5yj" path="res://scripts/main.gd" id="1_4f1hs"]
+[ext_resource type="Script" uid="uid://bwskymc5puq2o" path="res://scripts/canvas_driver.gd" id="1_t4d27"]
 [ext_resource type="PackedScene" uid="uid://b23lrec7hffl7" path="res://scenes/settings.tscn" id="2_2lt2v"]
-[ext_resource type="Shader" path="res://shaders/pixelgrid.gdshader" id="5_m66s7"]
-[ext_resource type="Script" path="res://scripts/draw_on_top.gd" id="6_w3tut"]
+[ext_resource type="Shader" uid="uid://dbul1j3o7y8qp" path="res://shaders/pixelgrid.gdshader" id="5_m66s7"]
+[ext_resource type="Script" uid="uid://dses8y5x7cvul" path="res://scripts/draw_on_top.gd" id="6_w3tut"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m8hk0"]
 bg_color = Color(0, 0, 0.117647, 1)

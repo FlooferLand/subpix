@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b23lrec7hffl7"]
 
-[ext_resource type="Script" path="res://scripts/settings_window.gd" id="1_nbdtx"]
+[ext_resource type="Script" uid="uid://csi6l322vqrp5" path="res://scripts/settings_window.gd" id="1_nbdtx"]
 
 [node name="Settings" type="Window" node_paths=PackedStringArray("widgets")]
 title = "Settings"
