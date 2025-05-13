@@ -2,27 +2,25 @@ extends Control
 
 @export var create_button: Button
 @export var load_button: Button
-@export var info: RichTextLabel
+@export var info_label: RichTextLabel
+@export var subtext_label: RichTextLabel
+
 
 func _ready() -> void:
 	create_button.pressed.connect(func(): ProjectManager.new_project(self))
 	load_button.pressed.connect(func(): ProjectManager.load_project(self))
-	info.text = ""
+	info_label.text = ""
+	create_button.grab_focus()
 	add_info_line("Version %s\n" % ProjectSettings.get_setting("application/config/version"))
 	add_info_line("NOTE: Subpix is a work in progress. Report any bugs you encounter [url=https://github.com/FlooferLand/subpix/issues]on GitHub![/url]")
 	add_info_line("Made with the Godot Engine ([url=godotengine.org/license]godotengine.org/license[/url])")
-	info.meta_clicked.connect(
+	info_label.meta_clicked.connect(
 		func(meta):
 			OS.shell_open(str(meta))
 	)
 
-func _input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		if OS.is_debug_build() and event.pressed and event.keycode == KEY_C:
-			ProjectManager.new_project(self, true)
-
 func add_info_line(line: String):
-	info.append_text(
+	info_label.append_text(
 		line.replace("[url=", "[color=cyan][url=")
 			.replace("[/url]", "[/url][/color]") + "\n"
 	)

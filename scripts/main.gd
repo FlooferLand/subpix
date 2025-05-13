@@ -25,7 +25,8 @@ extends Control
 @export_group("Resources")
 @export var settings_scene: PackedScene
 
-@onready var old_canvas_size := canvas_viewport.size
+@onready var old_canvas_size := canvas_container.size
+var preview_window_pad := Vector2i(32, 32)
 
 func _ready() -> void:
 	new_button.pressed.connect(func(): ProjectManager.new_project(self))
@@ -35,24 +36,31 @@ func _ready() -> void:
 	export_large_button.pressed.connect(func(): ProjectManager.export_image_large(self, canvas))
 	settings_button.pressed.connect(open_settings)
 
+	var update_preview_window_pos := func():
+		preview_image_window.position = preview_image_window.position\
+			.clamp(Vector2i.ZERO, Vector2i(canvas_container.size) - Vector2i(preview_image_window.size) - preview_window_pad)
+
 	# Canvas viewport
 	canvas_container.resized.connect(func():
-		var new_canvas_size := canvas_container.size
+		var new_canvas_size := Vector2i(canvas_container.size)
+		if old_canvas_size.length() < 1:
+			return
 
 		# Moving the preview window
-		# TODO: Move the preview window when viewport is resized (80% done)
-		#preview_image_window.position.x = remap(
-		#	preview_image_window.position.x,
-		#	0, old_canvas_size.x,
-		#	0, new_canvas_size.x
-		#)
-		#preview_image_window.position.y = remap(
-		#	preview_image_window.position.y,
-		#	0, old_canvas_size.y,
-		#	0, new_canvas_size.y
-		#)
+		# TODO: Finish moving the preview window when viewport is resized (80% done)
+		preview_image_window.position.x = remap(
+			preview_image_window.position.x,
+			0, old_canvas_size.x,
+			0, new_canvas_size.x
+		)
+		preview_image_window.position.y = remap(
+			preview_image_window.position.y,
+			0, old_canvas_size.y,
+			0, new_canvas_size.y
+		)
 
 		# Final
+		update_preview_window_pos.call()
 		old_canvas_size = new_canvas_size
 	)
 
@@ -60,7 +68,8 @@ func _ready() -> void:
 	var toggle_preview_window := func():
 		preview_image_window.visible = not preview_image_window.visible
 		Autoload.settings.show_preview = preview_image_window.visible
-	preview_image_window.position = Vector2(get_viewport().size) - Vector2(preview_image_window.size) - Vector2(32, 32)
+		update_preview_window_pos.call()
+	preview_image_window.position = Vector2i(get_viewport().size) - Vector2i(preview_image_window.size) - preview_window_pad
 	preview_image_window.close_requested.connect(toggle_preview_window)
 	preview_toggle.pressed.connect(toggle_preview_window)
 
@@ -109,7 +118,7 @@ func _notification(what):
 				get_tree().quit()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	fps.text = "FPS: %s" % Engine.get_frames_per_second()
 
 func _input(event: InputEvent) -> void:
@@ -117,9 +126,6 @@ func _input(event: InputEvent) -> void:
 		var increment := (0.5 if Input.is_key_pressed(KEY_SHIFT) else 0.1)
 		brush_strength.value += (increment * (1.0 if event.is_action_pressed("brush_strength_add") else -1.0))
 		brush_strength.value = clamp(brush_strength.value, 0.25, 1.0)
-
-func _on_canvas_resized(old: Vector2i, new: Vector2i) -> void:
-	print("Resized!")
 
 func init_tool(_root: TreeItem, tool_name: String, tool: CanvasDriver.Tool) -> void:
 	var item := tool_tree.create_item(null, int(tool))

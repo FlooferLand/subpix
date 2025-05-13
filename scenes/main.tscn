@@ -56,9 +56,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4f1hs")
-canvas = NodePath("Panels/Canvas2/Canvas/SubViewport/CanvasDriver")
-canvas_viewport = NodePath("Panels/Canvas2/Canvas/SubViewport")
-canvas_container = NodePath("Panels/Canvas2/Canvas")
+canvas = NodePath("Panels/Canvas/Canvas/SubViewport/CanvasDriver")
+canvas_viewport = NodePath("Panels/Canvas/Canvas/SubViewport")
+canvas_container = NodePath("Panels/Canvas/Canvas")
 tool_tree = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Tools/Tools")
 brush_strength = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength/HSlider")
 new_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Project/New")
@@ -71,8 +71,8 @@ preview_toggle = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd 
 preview_image_window = NodePath("Panels/Preview")
 preview_image = NodePath("Panels/Preview/TextureRect")
 fps = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/FPS")
-paint_mode = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/PaintMode/HSplitContainer/PaintMode")
-pixel_paint_color = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/PaintMode/HSplitContainer/ColorPickerButton")
+paint_mode = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Mode/HSplitContainer/PaintMode")
+pixel_paint_color = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Mode/HSplitContainer/ColorPickerButton")
 settings_scene = ExtResource("2_2lt2v")
 
 [node name="Backdrop" type="ColorRect" parent="."]
@@ -140,20 +140,20 @@ focus_mode = 0
 hide_root = true
 scroll_horizontal_enabled = false
 
-[node name="PaintMode" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer"]
+[node name="Mode" type="VBoxContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/PaintMode"]
+[node name="Label" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Mode"]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.466667, 1, 1)
-text = "Paint mode"
+text = "Mode"
 autowrap_mode = 2
 
-[node name="HSplitContainer" type="HSplitContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/PaintMode"]
+[node name="HSplitContainer" type="HSplitContainer" parent="Panels/Left panel/MarginContainer/VBoxContainer/Mode"]
 layout_mode = 2
 
-[node name="PaintMode" type="OptionButton" parent="Panels/Left panel/MarginContainer/VBoxContainer/PaintMode/HSplitContainer"]
+[node name="PaintMode" type="OptionButton" parent="Panels/Left panel/MarginContainer/VBoxContainer/Mode/HSplitContainer"]
 layout_mode = 2
 shortcut = SubResource("Shortcut_oide4")
 selected = 1
@@ -163,7 +163,7 @@ popup/item_0/id = 0
 popup/item_1/text = "Subpixel"
 popup/item_1/id = 1
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="Panels/Left panel/MarginContainer/VBoxContainer/PaintMode/HSplitContainer"]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Panels/Left panel/MarginContainer/VBoxContainer/Mode/HSplitContainer"]
 layout_mode = 2
 text = " "
 color = Color(1, 1, 1, 1)
@@ -281,19 +281,19 @@ layout_mode = 2
 text = "FPS: "
 autowrap_mode = 3
 
-[node name="Canvas2" type="Control" parent="Panels"]
+[node name="Canvas" type="Control" parent="Panels"]
 layout_mode = 2
 
-[node name="Backdrop" type="ColorRect" parent="Panels/Canvas2"]
+[node name="Backdrop" type="ColorRect" parent="Panels/Canvas"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)
+color = Color(0.00688424, 0.00690643, 0.124432, 1)
 
-[node name="Canvas" type="SubViewportContainer" parent="Panels/Canvas2"]
+[node name="Canvas" type="SubViewportContainer" parent="Panels/Canvas"]
 clip_contents = true
 layout_mode = 1
 anchors_preset = 15
@@ -304,7 +304,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="Panels/Canvas2/Canvas"]
+[node name="SubViewport" type="SubViewport" parent="Panels/Canvas/Canvas"]
 transparent_bg = true
 handle_input_locally = false
 msaa_2d = 2
@@ -312,28 +312,24 @@ use_debanding = true
 size = Vector2i(1166, 768)
 render_target_update_mode = 4
 
-[node name="CanvasDriver" type="Sprite2D" parent="Panels/Canvas2/Canvas/SubViewport" node_paths=PackedStringArray("main", "pixel_rows_filter", "brush_strength", "draw_utils", "camera")]
+[node name="CanvasDriver" type="Sprite2D" parent="Panels/Canvas/Canvas/SubViewport" node_paths=PackedStringArray("main", "brush_strength", "draw_utils", "camera", "filter")]
+centered = false
 script = ExtResource("1_t4d27")
 main = NodePath("../../../../..")
-pixel_rows_filter = NodePath("../Filter")
 brush_strength = NodePath("../../../../Left panel/MarginContainer/VBoxContainer/Brush/Brush/Strength/HSlider")
 draw_utils = NodePath("../CanvasDrawUtils")
 camera = NodePath("../Camera2D")
+filter = NodePath("../Filter")
 
-[node name="CanvasDrawUtils" type="Node2D" parent="Panels/Canvas2/Canvas/SubViewport" node_paths=PackedStringArray("canvas")]
+[node name="CanvasDrawUtils" type="Node2D" parent="Panels/Canvas/Canvas/SubViewport" node_paths=PackedStringArray("canvas")]
 script = ExtResource("4_y20ws")
 canvas = NodePath("../CanvasDriver")
 
-[node name="Camera2D" type="Camera2D" parent="Panels/Canvas2/Canvas/SubViewport"]
+[node name="Camera2D" type="Camera2D" parent="Panels/Canvas/Canvas/SubViewport"]
 
-[node name="Filter" type="ColorRect" parent="Panels/Canvas2/Canvas/SubViewport"]
+[node name="Filter" type="Sprite2D" parent="Panels/Canvas/Canvas/SubViewport"]
 material = SubResource("ShaderMaterial_noobk")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
+centered = false
 
 [node name="Preview" type="Window" parent="Panels"]
 title = "Preview"

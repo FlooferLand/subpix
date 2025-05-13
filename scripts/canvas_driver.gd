@@ -4,10 +4,10 @@ extends Sprite2D
 # TODO: Handle resizing of the canvas
 
 @export var main: Main
-@export var pixel_rows_filter: ColorRect
 @export var brush_strength: Slider
 @export var draw_utils: CanvasDrawUtils
 @export var camera: Camera2D
+@export var filter: Sprite2D
 var traveling := false
 var tool := Tool.Draw
 var zoom := 1.0
@@ -15,7 +15,7 @@ var dragging := 0
 var dragged_tiles := Dictionary()
 @onready var tile_size: Vector2 = Vector2(64, 64)
 var zoom_min := 0.2
-var zoom_max := 1.25
+var zoom_max := 2.0
 var canvas_size_text := ""
 @onready var pixel_paint_color := main.pixel_paint_color.color
 
@@ -56,11 +56,12 @@ func _ready():
 	var setup := func():
 		main.preview_image.texture = ImageTexture.create_from_image(ProjectManager.current_project.image)
 
-		# Sprites can't have a set size without a texture
-		var size := get_canvas_size()
+		# FIXME: Sprites can't have a set size without a texture (workaround)
+		var size := Vector2i(get_canvas_size())
 		var image := Image.create_empty(size.x, size.y, false, Image.FORMAT_RGBA8)
 		image.fill(Color.TRANSPARENT)
 		texture = ImageTexture.create_from_image(image)
+		filter.texture = texture
 		_on_pixels_updated()
 
 	ProjectManager.project_changed.connect(setup)
@@ -68,12 +69,12 @@ func _ready():
 
 	# Settings
 	var update_from_settings := func():
-		pixel_rows_filter.visible = Autoload.settings.fancy_shader
+		filter.visible = Autoload.settings.fancy_shader
 		main.preview_image_window.visible = Autoload.settings.show_preview
 	Autoload.settings.changed.connect(update_from_settings)
 	update_from_settings.call()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var pos := get_local_mouse_position()
 	var pixel_pos = Vector2i(pos / tile_size)
 	var sub_offset = Vector2i(((pos / tile_size) - Vector2(pixel_pos)) * 3)
@@ -112,7 +113,7 @@ func _draw() -> void:
 								color = Color(Autoload.settings.subpixel_colours["dot2"] * pixel.g)
 							Channels.BLUE:
 								color = Color(Autoload.settings.subpixel_colours["dot3"] * pixel.b)
-						color = color.clamp(Color.WHITE * 0.25, Color.WHITE)
+						color = color.clamp(Color.WHITE * 0.3, Color.WHITE)
 						draw_rect(rect, color)
 
 					# Border
@@ -143,7 +144,7 @@ func _draw() -> void:
 
 	# Info text
 	for i in len(canvas_size_text):
-		draw_char(load("res://fonts/Better VCR 6.1.ttf"), Vector2(i * 16, -4), canvas_size_text[i])
+		draw_char(preload("res://fonts/Better VCR 6.1.ttf"), Vector2(i * 16, -4), canvas_size_text[i])
 
 func _on_pixels_updated():
 	var image := ProjectManager.current_project.image
@@ -211,7 +212,7 @@ func _input(event: InputEvent):
 				traveling = event.pressed
 			MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN when event.pressed:
 				var modifier := (1.0 if event.button_index == MOUSE_BUTTON_WHEEL_UP else -1.0)
-				zoom = clamp(zoom + (0.05 * modifier), zoom_min, zoom_max)
+				zoom = clamp(zoom + (0.1 * modifier), zoom_min, zoom_max)
 				camera.zoom = Vector2.ONE * zoom
 			MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT:
 				if subpixel_info["hovering"] == null:
@@ -250,19 +251,19 @@ func _input(event: InputEvent):
 					dragged_tiles.clear()
 	elif event is InputEventMouseMotion:
 		if traveling:
-			var zoomies = 0.5 + clamp(pow(zoom_max - zoom, 20), 0.5, zoom_max);
+			var zoomies = clamp(pow(zoom_max - zoom, 20), 0.5, zoom_max);
 			camera.position -= event.relative * zoomies
 
-			# Warping the cursor around edges
-			var pad := 8.0
-			var mouse: Vector2i = event.position
-			var viewport_max: Vector2i = get_viewport().size - Vector2i(pad, pad)
-			var warp_destination := Vector2i()
-			if mouse.x > viewport_max.x:
-				warp_destination.x = 0
-			elif mouse.x < pad:
-				warp_destination.x = viewport_max.x
-			#Input.warp_mouse()
+			# TODO: Warping the cursor around edges
+			#var pad := 8
+			#var mouse: Vector2i = event.position
+			#var viewport_max: Vector2i = get_viewport().size - Vector2i(pad, pad)
+			#var warp_destination := Vector2i()
+			#if mouse.x > viewport_max.x:
+				#warp_destination.x = 0
+			#elif mouse.x < pad:
+				#warp_destination.x = viewport_max.x
+			#Input.warp_mouse(warp_destination)
 		elif dragging and subpixel_info["hovering"] != null:
 			var value := get_brush_value()
 			match tool:

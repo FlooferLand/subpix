@@ -7,8 +7,8 @@ class Project:
 	var path: String
 	var image: Image
 	var dirty: bool = false
-	func _init(img: Image, path: String = "") -> void:
-		self.path = path
+	func _init(img: Image, project_path: String = "") -> void:
+		self.path = project_path
 		self.image = img
 	func mark_dirty() -> void:
 		dirty = true
@@ -22,7 +22,7 @@ var max_image_size := Vector2(128, 128)
 var max_image_warning := "The image size is currently limited to %sx%s for performance reasons, sorry!\nThis will change as the program improves and gets more efficient." % [max_image_size.x, max_image_size.y]
 
 # Dialog for creating new projects
-func new_project(caller: Node, debug: bool = false):
+func new_project(caller: Node):
 	var window := Window.new()
 	window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
 	window.transient = true
@@ -54,14 +54,32 @@ func new_project(caller: Node, debug: bool = false):
 	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(container)
+	
+	var notice_label := Label.new()
+	notice_label.visible = false
+	notice_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	notice_label.add_theme_color_override("font_color", Color.YELLOW)
+	var check_warn_size := func(text: String):
+		if not text.is_valid_int(): return
+		var num := int(text)
+		if num >= max_image_size.x or num >= max_image_size.y:
+			notice_label.text = """
+			A size larger than %sx%s is not recommended.\n
+			The editor will be very laggy beyond this point
+			""" % [int(max_image_size.x), int(max_image_size.y)]
+			notice_label.visible = true
+		else:
+			notice_label.text = ""
+			notice_label.visible = false
 
-	# Widgets
 	var width_edit := LineEdit.new()
 	width_edit.placeholder_text = "Width"
+	width_edit.text_changed.connect(check_warn_size)
 	container.add_child(width_edit)
 
 	var height_edit := LineEdit.new()
 	height_edit.placeholder_text = "Height"
+	height_edit.text_changed.connect(check_warn_size)
 	container.add_child(height_edit)
 
 	var create := Button.new()
@@ -74,11 +92,6 @@ func new_project(caller: Node, debug: bool = false):
 			height = int(height_edit.text)
 		else:
 			OS.alert("Width/height must be numbers")
-			return
-
-		# Checking if size is valid
-		if (width > max_image_size.x or height > max_image_size.y) and not debug:
-			OS.alert(max_image_warning, "Max limit reached")
 			return
 
 		# Creating the image
@@ -95,15 +108,14 @@ func new_project(caller: Node, debug: bool = false):
 	window.add_child(backdrop)
 	window.add_child(margin)
 	add_child(window)
-
-	# For debug mostly
-	if debug:
-		width_edit.text  = str(max_image_size.x)
-		height_edit.text = str(max_image_size.y)
-		make_project.call()
+	
+	# Finishing up
+	container.add_child(notice_label)
+	height_edit.text_submitted.connect(make_project.unbind(1))
+	width_edit.call_deferred("grab_focus")
 
 func load_project(caller: Node):
-	var load := func(buffer, path=""):
+	var load_func := func(buffer, path=""):
 		var image := Image.new()
 		var err := image.load_png_from_buffer(buffer)
 		if err != OK:
@@ -111,10 +123,9 @@ func load_project(caller: Node):
 			return
 
 		if image.get_width() < max_image_size.x and image.get_height() < max_image_size.y:
-			current_project = Project.new(image, path)
-			caller.get_tree().change_scene_to_file(main_scene)
-		else:
-			OS.alert(max_image_warning, "Max limit reached")
+			OS.alert(max_image_warning, "")
+		current_project = Project.new(image, path)
+		caller.get_tree().change_scene_to_file(main_scene)
 
 	if OS.get_name() != "Web":
 		var dialog := FileDialog.new()
@@ -124,13 +135,13 @@ func load_project(caller: Node):
 			func(path):
 				var file := FileAccess.open(path, FileAccess.READ)
 				var buffer := file.get_buffer(file.get_length())
-				load.call(buffer, path)
+				load_func.call(buffer, path)
 				dialog.queue_free()
 		)
 		add_child(dialog)
 		dialog.popup()
 	else:
-		WebFilesystem.load_file("project_loaded", ".png", load)
+		WebFilesystem.load_file("project_loaded", ".png", load_func)
 
 func save_project(_caller: Node, inplace: bool = true) -> void:
 	# Save function
@@ -177,7 +188,7 @@ func export_image(caller: Node) -> void:
 func export_image_large(caller: Node, canvas: CanvasDriver) -> void:
 	# Capturing the screenshot
 	# TODO: Make sure exporting still works with the new canvas
-	var export := func(path):
+	var export := func(_path):
 		var control := canvas.camera
 		var control_og_parent := control.get_parent()
 

@@ -1,19 +1,20 @@
-[gd_scene load_steps=6 format=3 uid="uid://bld387m82sawo"]
+[gd_scene load_steps=7 format=3 uid="uid://bld387m82sawo"]
 
 [ext_resource type="Script" uid="uid://dr2v1yicwhgbv" path="res://scripts/entry.gd" id="1_v23wx"]
 [ext_resource type="Shader" uid="uid://ds0njsfd6gwko" path="res://shaders/scrolling_backdrop.gdshader" id="2_7qrue"]
 [ext_resource type="Texture2D" uid="uid://da7trkdsdhchh" path="res://textures/bg_pixel_blue.png" id="3_riyh0"]
+[ext_resource type="Script" uid="uid://botjrx47s41fc" path="res://scripts/subtext.gd" id="4_xkqy0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_em41k"]
 shader = ExtResource("2_7qrue")
 shader_parameter/tile = ExtResource("3_riyh0")
-shader_parameter/tile_size = 15.0
-shader_parameter/brightness = 0.4
+shader_parameter/tile_size = 14.0
+shader_parameter/brightness = 0.55
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ufxal"]
 bg_color = Color(0, 0, 0, 0.784314)
 
-[node name="Entry" type="Control" node_paths=PackedStringArray("create_button", "load_button", "info")]
+[node name="Entry" type="Control" node_paths=PackedStringArray("create_button", "load_button", "info_label", "subtext_label")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,7 +24,9 @@ grow_vertical = 2
 script = ExtResource("1_v23wx")
 create_button = NodePath("PanelContainer/MarginContainer/Buttons/Create")
 load_button = NodePath("PanelContainer/MarginContainer/Buttons/Load")
-info = NodePath("MarginContainer/VBoxContainer/Info")
+info_label = NodePath("MarginContainer/VBoxContainer/Info")
+subtext_label = NodePath("Header/Subtext")
+metadata/_edit_lock_ = true
 
 [node name="Backdrop" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_em41k")
@@ -33,23 +36,56 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_lock_ = true
 
-[node name="Label" type="RichTextLabel" parent="."]
+[node name="Header" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 35.0
+offset_top = 34.0
+offset_right = -35.0
+offset_bottom = 177.0
+grow_horizontal = 2
+
+[node name="Title" type="RichTextLabel" parent="Header"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/line_separation = 10
+bbcode_enabled = true
+text = "[center][font_size=48][wave][color=cyan]subpix[/color][/wave]
+[font_size=16][wave freq=4 amp=8]Made by FlooferLand[/wave]"
+fit_content = true
+autowrap_mode = 0
+
+[node name="Subtext" type="RichTextLabel" parent="Header"]
+custom_minimum_size = Vector2(400, 40)
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -358.0
-offset_top = 45.0
-offset_right = 358.0
-offset_bottom = 180.0
+offset_left = -200.0
+offset_top = 101.0
+offset_right = 200.0
+offset_bottom = 149.0
 grow_horizontal = 2
-mouse_filter = 2
+pivot_offset = Vector2(200, 0)
+mouse_filter = 1
+mouse_default_cursor_shape = 2
 theme_override_constants/line_separation = 10
+theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
-text = "[center][font_size=32][wave][color=cyan]subpix[/color][/wave]
-[font_size=16][wave freq=4 amp=8]Made by FlooferLand[/wave]
-[font_size=16][wave freq=4 amp=8]Inspired by Japphy Riddle's video[/wave]"
+text = "[wave][color=yellow]Example[/color][/wave]"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("4_xkqy0")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -57,9 +93,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -160.0
-offset_top = 214.0
+offset_top = 248.0
 offset_right = 160.0
-offset_bottom = 314.0
+offset_bottom = 358.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ufxal")
 metadata/_edit_group_ = true
@@ -73,6 +109,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="Buttons" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 5
 
 [node name="Create" type="Button" parent="PanelContainer/MarginContainer/Buttons"]
 custom_minimum_size = Vector2(0, 48)
