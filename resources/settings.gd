@@ -9,3 +9,4 @@ extends Resource
 }
 @export var fancy_shader := true
 @export var show_preview := true
+@export var show_pixel_grid := false

@@ -1,6 +1,7 @@
 extends Window
 
 @export var widgets: VBoxContainer
+var canvas: CanvasDriver  # Set by Main when the settings window is created
 
 func _ready() -> void:
 	for property in Autoload.settings.get_property_list():
@@ -91,4 +92,5 @@ func construct_entry(property: Variant, value: Variant, set_obj: Variant, layer:
 
 func _on_close_requested() -> void:
 	Autoload.save_settings()
+	canvas.queue_redraw()
 	queue_free()

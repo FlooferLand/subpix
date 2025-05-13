@@ -1,5 +1,8 @@
 extends Node
 
+# Handles image loading / saving
+# The web code is based on http://kehomsforge.com/tutorials/single/save-load-file-system-godot-html-export (thank you for the amazing tutorial)
+
 class Project:
 	var path: String
 	var image: Image
@@ -15,9 +18,10 @@ class Project:
 signal project_changed(new: Dictionary)
 var current_project: Project = null
 var main_scene := "res://scenes/main.tscn"
-var max_image_size := Vector2(96, 96)
+var max_image_size := Vector2(128, 128)
 var max_image_warning := "The image size is currently limited to %sx%s for performance reasons, sorry!\nThis will change as the program improves and gets more efficient." % [max_image_size.x, max_image_size.y]
 
+# Dialog for creating new projects
 func new_project(caller: Node, debug: bool = false):
 	var window := Window.new()
 	window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
@@ -99,9 +103,7 @@ func new_project(caller: Node, debug: bool = false):
 		make_project.call()
 
 func load_project(caller: Node):
-	var save := func(path):
-		var file := FileAccess.open(path, FileAccess.READ)
-		var buffer := file.get_buffer(file.get_length())
+	var load := func(buffer, path=""):
 		var image := Image.new()
 		var err := image.load_png_from_buffer(buffer)
 		if err != OK:
@@ -114,60 +116,68 @@ func load_project(caller: Node):
 		else:
 			OS.alert(max_image_warning, "Max limit reached")
 
-	var dialog := FileDialog.new()
-	dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
-	_configure_filedialog(dialog)
-	dialog.file_selected.connect(
-		func(path):
-			save.call(path)
-			dialog.queue_free()
-	)
-	add_child(dialog)
-	dialog.popup()
+	if OS.get_name() != "Web":
+		var dialog := FileDialog.new()
+		dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+		_configure_filedialog(dialog)
+		dialog.file_selected.connect(
+			func(path):
+				var file := FileAccess.open(path, FileAccess.READ)
+				var buffer := file.get_buffer(file.get_length())
+				load.call(buffer, path)
+				dialog.queue_free()
+		)
+		add_child(dialog)
+		dialog.popup()
+	else:
+		WebFilesystem.load_file("project_loaded", ".png", load)
 
-func save_project(_caller: Node) -> void:
+func save_project(_caller: Node, inplace: bool = true) -> void:
 	# Save function
-	var save := (func(path):
-		var err := current_project.image.save_png(path)
-		if err != OK:
-			OS.alert("Saving failed due to error '%s'" % err, "Error")
-			return
+	var save := (func(path=''):
+		var buffer := current_project.image.save_png_to_buffer()
 		current_project.clear_dirty()
-		current_project.path = path
 		print("Saved project to '%s'!" % path)
+		return buffer
 	)
 
 	# Optional save dialog
-	if current_project and !current_project.path.is_empty():
-		save.call(current_project.path)
-	else:
-		var dialog := FileDialog.new()
-		dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
-		dialog.file_selected.connect(func(path):
-			save.call(path)
-			dialog.queue_free()
-		)
-		_configure_filedialog(dialog)
-		add_child(dialog)
-		dialog.popup()
+	if OS.get_name() != "Web":
+		if current_project and !current_project.path.is_empty() and inplace:
+			var path := current_project.path
+			var buffer: PackedByteArray = save.call(path)
+			var file := FileAccess.open(path, FileAccess.WRITE)
+			file.store_buffer(buffer)
+			file.close()
+		else:
+			var dialog := FileDialog.new()
+			dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+			dialog.file_selected.connect(func(path):
+				if path != "":
+					var buffer: PackedByteArray = save.call(path)
+					var file := FileAccess.open(path, FileAccess.WRITE)
+					file.store_buffer(buffer)
+					file.close()
 
-func export_image(_caller: Node) -> void:
-	var dialog := FileDialog.new()
-	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
-	dialog.file_selected.connect(func(path):
-		var err := current_project.image.save_png(path)
-		if err != OK:
-			OS.alert("Exporting failed due to error '%s'" % err, "Error")
-		dialog.queue_free()
-	)
-	_configure_filedialog(dialog)
-	add_child(dialog)
-	dialog.popup()
+					current_project.path = path
+					dialog.queue_free()
+				else:
+					OS.alert("Can't save to an empty path!")
+			)
+			_configure_filedialog(dialog)
+			add_child(dialog)
+			dialog.popup()
+	else:
+		var buffer: PackedByteArray = save.call()
+		WebFilesystem.save_file("save_project" if inplace else "export_project", buffer, "image.png", "image/png", inplace)
+
+func export_image(caller: Node) -> void:
+	save_project(caller, false)
 
 func export_image_large(caller: Node, canvas: CanvasDriver) -> void:
 	# Capturing the screenshot
 	# TODO: Make sure exporting still works with the new canvas
-	var save := func(path):
+	var export := func(path):
 		var control := canvas.camera
 		var control_og_parent := control.get_parent()
 
@@ -208,20 +218,24 @@ func export_image_large(caller: Node, canvas: CanvasDriver) -> void:
 		control.reparent(control_og_parent, false)
 
 		#image.resize(size.x * 4.0, size.y * 4.0, Image.INTERPOLATE_NEAREST)
-		var err := image.save_png(path)
-		if err != OK:
-			OS.alert("Exporting failed due to error '%s'" % err, "Error")
+		return image.save_png_to_buffer()
 
 	# Popping up the save dialog
-	var dialog := FileDialog.new()
-	dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
-	dialog.file_selected.connect(func(path):
-		save.call(path)
-		dialog.queue_free()
-	)
-	_configure_filedialog(dialog)
-	add_child(dialog)
-	dialog.popup()
+	if OS.get_name() != "Web":
+		var dialog := FileDialog.new()
+		dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+		dialog.file_selected.connect(func(path):
+			var buffer: PackedByteArray = export.call(path)
+			var file := FileAccess.open(path, FileAccess.WRITE)
+			file.store_buffer(buffer)
+			dialog.queue_free()
+		)
+		_configure_filedialog(dialog)
+		add_child(dialog)
+		dialog.popup()
+	else:
+		var buffer: PackedByteArray = export.call()
+		WebFilesystem.save_file("export_project", buffer, "image.png", "image/png", false)
 
 func _configure_filedialog(dialog: FileDialog) -> void:
 	dialog.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN

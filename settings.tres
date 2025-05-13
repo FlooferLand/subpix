@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="Settings" load_steps=2 format=3 uid="uid://dp2ycu5arlxh"]
+[gd_resource type="Resource" script_class="Settings" load_steps=2 format=3 uid="uid://cfefnqfon4g6t"]
 
-[ext_resource type="Script" uid="uid://cu3s3afqpuo0g" path="res://resources/settings.gd" id="1_5fx0e"]
+[ext_resource type="Script" uid="uid://wq2q48ioo8bk" path="res://resources/settings.gd" id="1_5fx0e"]
 
 [resource]
 script = ExtResource("1_5fx0e")
@@ -11,3 +11,4 @@ subpixel_colours = {
 }
 fancy_shader = false
 show_preview = true
+show_pixel_grid = false

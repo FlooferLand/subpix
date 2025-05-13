@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Subpix"
 config/description="Subpixel art editor"
-config/version="0.1.1"
+config/version="0.2.0"
 run/main_scene="res://scenes/entry.tscn"
 run/print_header=false
 config/features=PackedStringArray("4.4", "GL Compatibility")
@@ -23,6 +23,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Autoload="*res://scripts/autoload/autoload.gd"
+WebFilesystem="*res://scripts/autoload/web_filesystem.gd"
 ProjectManager="*res://scripts/autoload/project_manager.gd"
 
 [display]
@@ -35,6 +36,11 @@ window/size/window_height_override=768
 [dotnet]
 
 project/assembly_name="Subpix"
+
+[filesystem]
+
+import/fbx2gltf/enabled=false
+import/blender/enabled=false
 
 [gui]
 
