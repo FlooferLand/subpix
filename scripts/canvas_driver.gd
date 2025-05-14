@@ -8,12 +8,16 @@ extends Sprite2D
 @export var draw_utils: CanvasDrawUtils
 @export var camera: Camera2D
 @export var filter: Sprite2D
+const tile_size: Vector2 = Vector2(64, 64)
+const subpix_pad := Vector2(1.0, 1.0)
+const subpix_sep := Vector2(3.0, 3.0);
+const subpix_size := tile_size - (subpix_pad * 3.0)
+const sub_size := subpix_size / Vector2(3, 1)
 var traveling := false
 var tool := Tool.Draw
 var zoom := 1.0
 var dragging := 0
 var dragged_tiles := Dictionary()
-@onready var tile_size: Vector2 = Vector2(64, 64)
 var zoom_min := 0.2
 var zoom_max := 2.0
 var canvas_size_text := ""
@@ -51,6 +55,7 @@ enum PaintMode {
 	Subpixel = 1
 }
 
+
 func _ready():
 	# Project
 	var setup := func():
@@ -71,6 +76,8 @@ func _ready():
 	var update_from_settings := func():
 		filter.visible = Autoload.settings.fancy_shader
 		main.preview_image_window.visible = Autoload.settings.show_preview
+		draw_utils.queue_redraw()
+		queue_redraw()
 	Autoload.settings.changed.connect(update_from_settings)
 	update_from_settings.call()
 
@@ -83,7 +90,6 @@ func _process(_delta: float) -> void:
 # Drawing the canvas
 func _draw() -> void:
 	var image := ProjectManager.current_project.image
-	draw_rect(Rect2(0, 0, image.get_width() * tile_size.x, image.get_height() * tile_size.y), Color.DIM_GRAY, false, 4 + (get_zoom_antialiasing() * 5))
 	for y in range(image.get_height()):
 		for x in range(image.get_width()):
 			var pixel := image.get_pixel(x, y)  # TODO: Try caching the pixel on each draw
@@ -94,16 +100,7 @@ func _draw() -> void:
 					# Outside
 					draw_rect(Rect2(x * tile_size.x, y * tile_size.y, tile_size.x, tile_size.y), Color.BLACK)
 
-					# Inside
-					var pad := Vector2(1.0, 1.0);
-					var subpix_sep := Vector2(3.0, 3.0);
-					var padded_rect := Rect2(
-						(pos * tile_size) + pad,
-						tile_size - (pad * 3.0)
-					)
-
 					# Extra
-					var sub_size := padded_rect.size / Vector2(3, 1)
 					var draw_subpixel := func(rect: Rect2, channel: Channels):
 						var color: Color
 						match channel:
@@ -116,13 +113,11 @@ func _draw() -> void:
 						color = color.clamp(Color.WHITE * 0.3, Color.WHITE)
 						draw_rect(rect, color)
 
-					# Border
-					#draw_rect(Rect2(
-					#	padded_rect.position,
-					#	(sub_size * 3)
-					#), Color.WHITE, false, 2)
-
-					# RGB
+					# RGB interior
+					var padded_rect := Rect2(
+						(pos * tile_size) + subpix_pad,
+						subpix_size
+					)
 					draw_subpixel.call(Rect2(
 						padded_rect.position + subpix_sep,
 						sub_size - subpix_sep
@@ -139,8 +134,6 @@ func _draw() -> void:
 				PaintMode.Pixel:
 					var rect := Rect2(pos * tile_size, tile_size)
 					draw_rect(rect, pixel)
-					if Autoload.settings.show_pixel_grid:
-						draw_rect(rect, Color.WHITE.lerp(Color.TRANSPARENT, 0.95), false, 2.0 + (get_zoom_antialiasing() * 40))
 
 	# Info text
 	for i in len(canvas_size_text):
@@ -201,10 +194,6 @@ func get_brush_value() -> float:
 func get_paint_colour() -> Color:
 	return pixel_paint_color * get_brush_value()
 
-# A number that gets bigger the more zoomed in the user is. Used to thicken lines to stop aliasing
-func get_zoom_antialiasing() -> float:
-	return remap(zoom, zoom_min, zoom_max, 1.0, 0.0)
-
 func _input(event: InputEvent):
 	if event is InputEventMouseButton:
 		match event.button_index:
@@ -214,6 +203,7 @@ func _input(event: InputEvent):
 				var modifier := (1.0 if event.button_index == MOUSE_BUTTON_WHEEL_UP else -1.0)
 				zoom = clamp(zoom + (0.1 * modifier), zoom_min, zoom_max)
 				camera.zoom = Vector2.ONE * zoom
+				draw_utils.queue_redraw()
 			MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT:
 				if subpixel_info["hovering"] == null:
 					push_warning("Hovering is null")

@@ -19,7 +19,6 @@ signal project_changed(new: Dictionary)
 var current_project: Project = null
 var main_scene := "res://scenes/main.tscn"
 var max_image_size := Vector2(128, 128)
-var max_image_warning := "The image size is currently limited to %sx%s for performance reasons, sorry!\nThis will change as the program improves and gets more efficient." % [max_image_size.x, max_image_size.y]
 
 # Dialog for creating new projects
 func new_project(caller: Node):
@@ -121,9 +120,7 @@ func load_project(caller: Node):
 		if err != OK:
 			OS.alert("Loading failed due to error '%s'" % err, "Error")
 			return
-
-		if image.get_width() < max_image_size.x and image.get_height() < max_image_size.y:
-			OS.alert(max_image_warning, "")
+		
 		current_project = Project.new(image, path)
 		caller.get_tree().change_scene_to_file(main_scene)
 

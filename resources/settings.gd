@@ -9,4 +9,6 @@ extends Resource
 }
 @export var fancy_shader := true
 @export var show_preview := true
-@export var show_pixel_grid := false
+@export var show_subpixel_grid := true
+@export var show_pixel_grid := true
+@export var grid_colour := Color.WHITE.lerp(Color.TRANSPARENT, 0.3)

@@ -5,6 +5,7 @@ extends Control
 
 @export_group("Nodes")
 @export var canvas: CanvasDriver
+@export var draw_utils: CanvasDrawUtils
 @export var canvas_viewport: SubViewport
 @export var canvas_container: SubViewportContainer
 @export var tool_tree: Tree
@@ -92,6 +93,7 @@ func _ready() -> void:
 				if Autoload.settings.show_preview:
 					preview_image_window.visible = true
 					pixel_paint_color.visible = false
+		draw_utils.queue_redraw()
 		canvas.queue_redraw()
 	)
 	pixel_paint_color.color_changed.connect(func(new):

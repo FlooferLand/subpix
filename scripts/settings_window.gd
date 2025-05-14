@@ -65,7 +65,7 @@ func construct_entry(property: Variant, value: Variant, set_obj: Variant, layer:
 			TYPE_COLOR:
 				var color_picker := ColorPickerButton.new()
 				color_picker.color = value as Color
-				color_picker.edit_alpha = false
+				color_picker.edit_alpha = true
 				color_picker.color_changed.connect(func(new):
 					set_obj[property.name] = new
 					Autoload.settings.emit_signal("changed")

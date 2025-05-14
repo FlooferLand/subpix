@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bsdklnh1jx4iv"]
+[gd_scene load_steps=17 format=3 uid="uid://bsdklnh1jx4iv"]
 
 [ext_resource type="Script" uid="uid://dkvmwgng6tsep" path="res://scripts/main.gd" id="1_4f1hs"]
 [ext_resource type="Script" uid="uid://c1sj63oqg3d8l" path="res://scripts/canvas_driver.gd" id="1_t4d27"]
@@ -45,10 +45,14 @@ unicode = 101
 [sub_resource type="Shortcut" id="Shortcut_f04tq"]
 events = [SubResource("InputEventKey_5lrlh")]
 
+[sub_resource type="Curve" id="Curve_tbgi4"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.365517, 0.0465443), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_noobk"]
 shader = ExtResource("5_m66s7")
 
-[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "canvas_viewport", "canvas_container", "tool_tree", "brush_strength", "new_button", "load_button", "save_button", "settings_button", "export_button", "export_large_button", "preview_toggle", "preview_image_window", "preview_image", "fps", "paint_mode", "pixel_paint_color")]
+[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "draw_utils", "canvas_viewport", "canvas_container", "tool_tree", "brush_strength", "new_button", "load_button", "save_button", "settings_button", "export_button", "export_large_button", "preview_toggle", "preview_image_window", "preview_image", "fps", "paint_mode", "pixel_paint_color")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -57,6 +61,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4f1hs")
 canvas = NodePath("Panels/Canvas/Canvas/SubViewport/CanvasDriver")
+draw_utils = NodePath("Panels/Canvas/Canvas/SubViewport/CanvasDrawUtils")
 canvas_viewport = NodePath("Panels/Canvas/Canvas/SubViewport")
 canvas_container = NodePath("Panels/Canvas/Canvas")
 tool_tree = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Tools/Tools")
@@ -94,7 +99,7 @@ grow_vertical = 2
 theme_override_constants/separation = 3
 
 [node name="Left panel" type="Control" parent="Panels"]
-custom_minimum_size = Vector2(192, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 
 [node name="Backdrop" type="Panel" parent="Panels/Left panel"]
@@ -309,7 +314,7 @@ transparent_bg = true
 handle_input_locally = false
 msaa_2d = 2
 use_debanding = true
-size = Vector2i(1166, 768)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="CanvasDriver" type="Sprite2D" parent="Panels/Canvas/Canvas/SubViewport" node_paths=PackedStringArray("main", "brush_strength", "draw_utils", "camera", "filter")]
@@ -324,6 +329,7 @@ filter = NodePath("../Filter")
 [node name="CanvasDrawUtils" type="Node2D" parent="Panels/Canvas/Canvas/SubViewport" node_paths=PackedStringArray("canvas")]
 script = ExtResource("4_y20ws")
 canvas = NodePath("../CanvasDriver")
+aliasing_curve = SubResource("Curve_tbgi4")
 
 [node name="Camera2D" type="Camera2D" parent="Panels/Canvas/Canvas/SubViewport"]
 
@@ -333,7 +339,7 @@ centered = false
 
 [node name="Preview" type="Window" parent="Panels"]
 title = "Preview"
-position = Vector2i(1026, 62)
+position = Vector2i(354, 62)
 size = Vector2i(150, 150)
 transient = true
 unfocusable = true

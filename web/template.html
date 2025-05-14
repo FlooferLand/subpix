@@ -51,24 +51,6 @@
                 margin: auto;
             }
 
-            #status-splash.show-image--false {
-                display: none;
-            }
-
-            #status-splash.fullsize--true {
-                height: 100%;
-                width: 100%;
-                object-fit: contain;
-            }
-
-            #status-splash.use-filter--false {
-                image-rendering: pixelated;
-            }
-
-            #status-progress, #status-notice {
-                display: none;
-            }
-
             #status-progress {
                 bottom: 10%;
                 width: 50%;
@@ -187,7 +169,7 @@
 					statusProgress.max = total;
                 }
             }).then(() => {
-                
+                // Error
             });
         </script>
     </body>

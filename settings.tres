@@ -11,4 +11,6 @@ subpixel_colours = {
 }
 fancy_shader = false
 show_preview = true
-show_pixel_grid = false
+show_subpixel_grid = true
+show_pixel_grid = true
+grid_colour = Color(1, 1, 1, 0.4)
