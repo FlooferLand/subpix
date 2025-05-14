@@ -4,6 +4,14 @@ var js_callbacks := {
 	"project_loaded": null
 }
 
+func _enter_tree() -> void:
+	if OS.get_name() == "Web":
+		var script := FileAccess.get_file_as_string("res://scripts/autoload/web_filesystem.js")
+		if script == "":
+			push_error(FileAccess.get_open_error())
+			return
+		JavaScriptBridge.eval(script, true)
+
 func load_file(id: String, accept: String, callback: Callable) -> void:
 	# Retrieve the 'gd_callbacks' object from JavaScript
 	js_callbacks[id] = JavaScriptBridge.create_callback(func(_js_buff: Array):

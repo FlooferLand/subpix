@@ -13,6 +13,7 @@ bg_color = Color(0, 0, 0, 1)
 disable_3d = true
 title = "Custom export"
 size = Vector2i(600, 600)
+visible = false
 exclusive = true
 script = ExtResource("1_cfimy")
 
