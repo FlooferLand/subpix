@@ -11,18 +11,18 @@ bg_color = Color(0, 0, 0, 1)
 
 [node name="ExportWindow" type="Window"]
 disable_3d = true
-title = "Custom export"
-size = Vector2i(600, 600)
-visible = false
+title = "Custom export window"
+size = Vector2i(1280, 800)
 exclusive = true
 script = ExtResource("1_cfimy")
 
-[node name="PushBuilds" type="Node" parent="." node_paths=PackedStringArray("progress_bar", "start_button", "output", "starting_label")]
+[node name="PushBuilds" type="Node" parent="." node_paths=PackedStringArray("export", "progress_bar", "start_button", "output", "starting_label")]
 script = ExtResource("2_lqh5l")
+export = NodePath("..")
 progress_bar = NodePath("../Export/MarginContainer/Main/ExportProgress/Progress")
 start_button = NodePath("../Export/MarginContainer/Main/Buttons/PushBuilds")
 output = NodePath("../Export/MarginContainer/Main/Output/VBoxContainer")
-starting_label = NodePath("../Export/MarginContainer/Main/Info")
+starting_label = NodePath("../Export/MarginContainer/Main/Buttons/Info")
 stylebox_bg = SubResource("StyleBoxFlat_sfwao")
 
 [node name="Export" type="PanelContainer" parent="."]
@@ -61,14 +61,14 @@ theme_override_constants/separation = 10
 layout_mode = 2
 text = "Push builds"
 
+[node name="Info" type="Label" parent="Export/MarginContainer/Main/Buttons"]
+layout_mode = 2
+
 [node name="Label" type="RichTextLabel" parent="Export/MarginContainer/Main"]
 layout_mode = 2
 bbcode_enabled = true
-text = "[color=yellow]WARNING:[/color] You must build everything using [url=https://github.com/FlooferLand/subpix/actions/workflows/export-optimized.yml][color=cyan]GitHub Actions[/color][/url] and unzip the artifact inside the designated [code]builds/{platform}[/code] folders"
+text = "[color=yellow]WARNING:[/color] You must build everything using [url=https://github.com/FlooferLand/subpix/actions/workflows/export-optimized.yml][color=cyan]GitHub Actions[/color][/url] and place the artifact zip files inside the [code]builds/[/code] folder"
 fit_content = true
-
-[node name="Info" type="Label" parent="Export/MarginContainer/Main"]
-layout_mode = 2
 
 [node name="Output" type="ScrollContainer" parent="Export/MarginContainer/Main"]
 layout_mode = 2
