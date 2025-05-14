@@ -1,0 +1,82 @@
+[gd_scene load_steps=5 format=3 uid="uid://cjxru7lksrkjr"]
+
+[ext_resource type="Script" uid="uid://bwi0gaag7q0oy" path="res://addons/editor/export/export.gd" id="1_cfimy"]
+[ext_resource type="Script" uid="uid://c5vp4iv3wa5x0" path="res://addons/editor/export/push_builds.gd" id="2_lqh5l"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sfwao"]
+bg_color = Color(0.122181, 0.128445, 0.170036, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqh5l"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="ExportWindow" type="Window"]
+disable_3d = true
+title = "Custom export"
+size = Vector2i(600, 600)
+exclusive = true
+script = ExtResource("1_cfimy")
+
+[node name="PushBuilds" type="Node" parent="." node_paths=PackedStringArray("progress_bar", "start_button", "output", "starting_label")]
+script = ExtResource("2_lqh5l")
+progress_bar = NodePath("../Export/MarginContainer/Main/ExportProgress/Progress")
+start_button = NodePath("../Export/MarginContainer/Main/Buttons/PushBuilds")
+output = NodePath("../Export/MarginContainer/Main/Output/VBoxContainer")
+starting_label = NodePath("../Export/MarginContainer/Main/Info")
+stylebox_bg = SubResource("StyleBoxFlat_sfwao")
+
+[node name="Export" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lqh5l")
+
+[node name="MarginContainer" type="MarginContainer" parent="Export"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Main" type="VBoxContainer" parent="Export/MarginContainer"]
+layout_mode = 2
+
+[node name="ExportProgress" type="VBoxContainer" parent="Export/MarginContainer/Main"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Export/MarginContainer/Main/ExportProgress"]
+layout_mode = 2
+text = "Progress"
+
+[node name="Progress" type="ProgressBar" parent="Export/MarginContainer/Main/ExportProgress"]
+layout_mode = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Export/MarginContainer/Main"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PushBuilds" type="Button" parent="Export/MarginContainer/Main/Buttons"]
+layout_mode = 2
+text = "Push builds"
+
+[node name="Label" type="RichTextLabel" parent="Export/MarginContainer/Main"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=yellow]WARNING:[/color] You must build everything using [url=https://github.com/FlooferLand/subpix/actions/workflows/export-optimized.yml][color=cyan]GitHub Actions[/color][/url] and unzip the artifact inside the designated [code]builds/{platform}[/code] folders"
+fit_content = true
+
+[node name="Info" type="Label" parent="Export/MarginContainer/Main"]
+layout_mode = 2
+
+[node name="Output" type="ScrollContainer" parent="Export/MarginContainer/Main"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Export/MarginContainer/Main/Output"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[connection signal="pressed" from="Export/MarginContainer/Main/Buttons/PushBuilds" to="PushBuilds" method="_on_push_builds_pressed"]
