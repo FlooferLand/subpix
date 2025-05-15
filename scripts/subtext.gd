@@ -5,7 +5,8 @@ const subtexts := [
 	"Built on the worst code imaginable",
 	"Inspired by Japhy Riddle's \"Smaller than pixelart\" video",
 	"Smaller than a pixel!",
-	"\"Sometimes one must sub the pixel, in order to subpixel\" - Sun Tzu"
+	"\"Sometimes one must sub the pixel, in order to subpixel\" - Sun Tzu",
+	"[20]\n[06]"
 ]
 
 func _ready() -> void:
