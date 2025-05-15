@@ -6,7 +6,9 @@
 		"disable_navigation": true,
 		"graphite": false,
 		"module_msdfgen_enabled": false,
-		"openxr": false
+		"module_text_server_fb_enabled": true,
+		"openxr": false,
+		"vulkan": false
 	},
 	"disabled_classes": [
 		"Animation",
@@ -49,13 +51,19 @@
 		"GLTFTextureSampler",
 		"GPUParticles2D",
 		"ImporterMesh",
+		"InputEventMIDI",
 		"Joint2D",
 		"Light2D",
 		"LightOccluder2D",
+		"LightmapGIData",
 		"Mesh",
 		"MeshLibrary",
 		"MultiMesh",
 		"MultiMeshInstance2D",
+		"MultiplayerSpawner",
+		"MultiplayerSynchronizer",
+		"NavigationAgent2D",
+		"NavigationAgent3D",
 		"NavigationLink2D",
 		"NavigationMesh",
 		"NavigationMeshSourceGeometryData2D",
@@ -92,7 +100,15 @@
 		"TileMapPattern",
 		"TileSet",
 		"TileSetSource",
-		"World3D"
+		"VideoStream",
+		"VideoStreamPlayback",
+		"VideoStreamPlayer",
+		"VisualShader",
+		"VisualShaderNode",
+		"VoxelGIData",
+		"World3D",
+		"WorldEnvironment",
+		"X509Certificate"
 	],
 	"type": "build_profile"
 }
