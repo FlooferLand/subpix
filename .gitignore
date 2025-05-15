@@ -1,6 +1,6 @@
-# Game-specific
+# Subpix-specific
 builds/
-settings.tscn
+settings.tres
 
 # Godot 4+ specific ignores
 .godot/
