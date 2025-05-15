@@ -39,14 +39,14 @@ func save_data() -> void:
 		push_error("Error saving user data")
 
 func update_recent_files() -> void:
-	# Remove duplicates
+	# Remove duplicates / problematic entries
 	var new: Array[String] = []
 	for item in data.recent_files:
-		if not new.has(item):
+		if not new.has(item) and len(item) != 0:
 			new.append(item)
 	data.recent_files = new
 		
-	if ProjectManager.current_project != null:
+	if ProjectManager.current_project != null && len(ProjectManager.current_project.path) > 0:
 		var new_path := ProjectManager.current_project.path
 		
 		# Don't add path if it already exists
