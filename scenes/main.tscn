@@ -52,7 +52,7 @@ point_count = 3
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_noobk"]
 shader = ExtResource("5_m66s7")
 
-[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "draw_utils", "canvas_viewport", "canvas_container", "tool_tree", "brush_strength", "new_button", "load_button", "save_button", "settings_button", "export_button", "export_large_button", "preview_toggle", "preview_image_window", "preview_image", "fps", "paint_mode", "pixel_paint_color")]
+[node name="Main" type="Control" node_paths=PackedStringArray("canvas", "draw_utils", "canvas_viewport", "canvas_container", "tool_tree", "brush_strength", "new_button", "load_button", "save_button", "settings_button", "export_button", "export_large_button", "preview_toggle", "preview_image_window", "preview_image", "exit_button", "fps", "paint_mode", "pixel_paint_color")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -75,7 +75,8 @@ export_large_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/
 preview_toggle = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/Preview")
 preview_image_window = NodePath("Panels/Preview")
 preview_image = NodePath("Panels/Preview/TextureRect")
-fps = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/FPS")
+exit_button = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor/Exit")
+fps = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/FPS")
 paint_mode = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Mode/HSplitContainer/PaintMode")
 pixel_paint_color = NodePath("Panels/Left panel/MarginContainer/VBoxContainer/Mode/HSplitContainer/ColorPickerButton")
 settings_scene = ExtResource("2_2lt2v")
@@ -268,19 +269,26 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0, 0.466667, 1, 1)
 text = "Editor"
 
-[node name="Settings" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
-layout_mode = 2
-focus_mode = 0
-text = "Open settings"
-alignment = 0
-
 [node name="Preview" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
 layout_mode = 2
 focus_mode = 0
 text = "Toggle preview"
 alignment = 0
 
-[node name="FPS" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
+[node name="Settings" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
+layout_mode = 2
+focus_mode = 0
+text = "Open settings"
+alignment = 0
+
+[node name="Exit" type="Button" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff/Editor"]
+layout_mode = 2
+focus_mode = 0
+shortcut = SubResource("Shortcut_4vgmt")
+text = "Exit to menu"
+alignment = 0
+
+[node name="FPS" type="Label" parent="Panels/Left panel/MarginContainer/VBoxContainer/Nerd stuff"]
 custom_minimum_size = Vector2(128, 0)
 layout_mode = 2
 text = "FPS: "

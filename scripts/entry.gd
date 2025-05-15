@@ -5,10 +5,10 @@ extends Control
 @export var info_label: RichTextLabel
 @export var subtext_label: RichTextLabel
 
-
 func _ready() -> void:
+	get_window().min_size = Vector2(1280, 720)
 	create_button.pressed.connect(func(): ProjectManager.new_project(self))
-	load_button.pressed.connect(func(): ProjectManager.load_project(self))
+	load_button.pressed.connect(func(): ProjectManager.pick_project(self))
 	info_label.text = ""
 	create_button.grab_focus()
 	add_info_line("Version %s\n" % ProjectSettings.get_setting("application/config/version"))

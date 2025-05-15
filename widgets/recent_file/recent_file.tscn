@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://hccrw35ubsvv"]
+
+[ext_resource type="Script" uid="uid://cq18jircjjata" path="res://widgets/recent_file/recent_file.gd" id="1_myaa8"]
+
+[node name="RecentFileWidget" type="Button" node_paths=PackedStringArray("title", "thumbnail")]
+custom_minimum_size = Vector2(96, 96)
+offset_right = 96.0
+offset_bottom = 96.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+focus_mode = 0
+script = ExtResource("1_myaa8")
+title = NodePath("VBoxContainer/Label")
+thumbnail = NodePath("VBoxContainer/MarginContainer/TextureRect")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 91.0
+offset_bottom = 91.0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 3
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/line_spacing = 0
+theme_override_constants/paragraph_spacing = 0
+horizontal_alignment = 1
+text_overrun_behavior = 3

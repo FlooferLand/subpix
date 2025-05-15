@@ -20,7 +20,7 @@ var current_project: Project = null
 var main_scene := "res://scenes/main.tscn"
 var max_image_size := Vector2(128, 128)
 
-# Dialog for creating new projects
+## Dialog for creating new projects
 func new_project(caller: Node):
 	var window := Window.new()
 	window.initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_MAIN_WINDOW_SCREEN
@@ -113,14 +113,22 @@ func new_project(caller: Node):
 	height_edit.text_submitted.connect(make_project.unbind(1))
 	width_edit.call_deferred("grab_focus")
 
-func load_project(caller: Node):
+## Loads a project from a path. NOT supported on web
+func load_project(path: String):
+	if OS.get_name() == "Web":
+		return
+	var image := Image.load_from_file(path)
+	current_project = Project.new(image, path)
+	(Engine.get_main_loop() as SceneTree).change_scene_to_file(main_scene)
+
+## Shows a file picker dialog to load a project
+func pick_project(caller: Node):
 	var load_func := func(buffer, path=""):
 		var image := Image.new()
 		var err := image.load_png_from_buffer(buffer)
 		if err != OK:
 			OS.alert("Loading failed due to error '%s'" % err, "Error")
 			return
-		
 		current_project = Project.new(image, path)
 		caller.get_tree().change_scene_to_file(main_scene)
 
@@ -255,9 +263,12 @@ func _configure_filedialog(dialog: FileDialog) -> void:
 	dialog.access = FileDialog.ACCESS_FILESYSTEM
 	dialog.add_filter("*.png", "Images")
 
-	var pictures := OS.get_system_dir(OS.SYSTEM_DIR_PICTURES)
-	if DirAccess.dir_exists_absolute(pictures):
-		dialog.current_dir = pictures
+	if OS.is_debug_build():
+		dialog.current_dir = ProjectSettings.globalize_path("res://textures/")
+	else:
+		var pictures := OS.get_system_dir(OS.SYSTEM_DIR_PICTURES)
+		if DirAccess.dir_exists_absolute(pictures):
+			dialog.current_dir = pictures
 
 func _ready() -> void:
 	if not ResourceLoader.exists(main_scene):

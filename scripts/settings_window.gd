@@ -15,7 +15,7 @@ func _ready() -> void:
 	var reset := Button.new()
 	reset.text = "Reset"
 	reset.pressed.connect(func():
-		var new := Settings.new()
+		var new := UserSettings.new()
 		for property in Autoload.settings.get_property_list():
 			if not property.usage & PROPERTY_USAGE_EDITOR:
 				continue

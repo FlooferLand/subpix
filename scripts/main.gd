@@ -19,6 +19,7 @@ extends Control
 @export var preview_toggle: Button
 @export var preview_image_window: Window
 @export var preview_image: TextureRect
+@export var exit_button: Button
 @export var fps: Label
 @export var paint_mode: OptionButton
 @export var pixel_paint_color: ColorPickerButton
@@ -31,11 +32,13 @@ var preview_window_pad := Vector2i(32, 32)
 
 func _ready() -> void:
 	new_button.pressed.connect(func(): ProjectManager.new_project(self))
-	load_button.pressed.connect(func(): ProjectManager.load_project(self))
+	load_button.pressed.connect(func(): ProjectManager.pick_project(self))
 	save_button.pressed.connect(func(): ProjectManager.save_project(self))
 	export_button.pressed.connect(func(): ProjectManager.export_image(self))
 	export_large_button.pressed.connect(func(): ProjectManager.export_image_large(self, canvas))
 	settings_button.pressed.connect(open_settings)
+	exit_button.pressed.connect(get_tree().change_scene_to_file.bind("uid://bld387m82sawo"))
+	Autoload.update_recent_files()
 
 	var update_preview_window_pos := func():
 		preview_image_window.position = preview_image_window.position\
