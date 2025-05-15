@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="UserData" load_steps=2 format=3 uid="uid://c67dssmk28xhk"]
-
-[ext_resource type="Script" uid="uid://dsip37vby2nyv" path="res://resources/data.gd" id="1_f2jcv"]
-
-[resource]
-script = ExtResource("1_f2jcv")
-recent_files = Array[String](["C:/Users/FlooferLand/Documents/GameDev/Godot/subpix/textures/checkbox_check.png", "C:/Users/FlooferLand/Documents/GameDev/Godot/subpix/textures/thing.png"])

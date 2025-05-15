@@ -1,6 +1,7 @@
 # Subpix-specific
 builds/
 settings.tres
+data.tres
 
 # Godot 4+ specific ignores
 .godot/
