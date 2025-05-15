@@ -45,6 +45,7 @@ env:
                 module_freetype_enabled=yes
                 module_gdscript_enabled=yes
                 module_webp_enabled=yes
+                module_svg_enabled=yes
                 graphite=no
                 build_profile=../subpix/.github/disabled_classes.build
   # Links
